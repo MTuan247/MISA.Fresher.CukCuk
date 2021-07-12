@@ -1,0 +1,45 @@
+.navbar {
+    float: left;
+    width: 220px;
+    height: calc(100vh - 48px);
+    background-color: #ffffff;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #000;
+}
+
+.navbar .navbar-content {
+    width: 100%;
+}
+
+.navbar .navbar-content .nav-item {
+    width: 100%;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.navbar .navbar-content .nav-item:hover {
+    background-color: #BBBBBB;
+}
+
+.navbar .navbar-content .nav-item-icon {
+    margin: 12px 10px 12px 16px;
+    height: 24px;
+    width: 24px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.nav-item--active {
+    background-color: #019160;
+    color: #fff;
+}
+
+.nav-item--active .nav-item-icon {
+    filter: invert(100%) sepia(100%) saturate(2%) hue-rotate(344deg) brightness(104%) contrast(101%);
+}
+

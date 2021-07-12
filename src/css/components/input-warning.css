@@ -1,0 +1,22 @@
+.input-warning {
+    font-family: GoogleSans-Light;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FF4747;
+    height: 80px;
+    width: 200px;
+    border-radius: 8px;
+    color: white;
+}
+
+.input-warning i {
+    position: absolute;
+    color: #FF4747;
+    top: 64px;
+    left: 100px;
+    /* width: 24px;
+    height: 24px; */
+    font-size: 36px;
+}

@@ -1,0 +1,64 @@
+* {
+    box-sizing: border-box;
+    --border-color : #E5E5E5;
+    --primary-color : #01B075;
+    --button-color: #019160;
+    --button-color-hover: #2FBE8E;
+    --button-color-focus: #EBF9F4;
+}
+
+body {
+    font-family: GoogleSans-Regular;
+    box-sizing: border-box;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+input {
+    font-family: GoogleSans-Regular;
+}
+
+.div-icon {
+    height: 24px;
+    width: 24px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* width */
+::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+  
+  /* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+  
+  /* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+  
+  /* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+@font-face {
+    font-family: 'GoogleSans-Regular';
+    src: url('../assets/font/GoogleSans-Regular.otf')
+}
+
+@font-face {
+    font-family: 'GoogleSans-Light';
+    src: url('../assets/font/GoogleSans-Light.otf')
+}
+
+@font-face {
+    font-family: 'GoogleSans-Thin';
+    src: url('../assets/font/GoogleSans-Thin.otf')
+}

@@ -1,0 +1,67 @@
+.btn-default {
+    cursor: pointer;
+    background-color: #019160;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #fff;
+    padding: 0 24px;
+    text-align: center;
+    border: 0;
+    height: 40px;
+}
+
+.btn-default:hover {
+    background-color: #2FBE8E;
+}
+
+.btn-default--pressed {
+    background-color: #01B075;
+}
+
+.btn-icon {
+    cursor: pointer;
+    background-color: #019160;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #fff;
+    padding: 0 16px;
+    text-align: left;
+    border: 0;
+    height: 40px;
+    user-select: none;
+}
+
+.btn-icon:hover {
+    background-color: #2FBE8E;
+} 
+
+.btn-icon--pressed {
+    background-color: #01B075;
+}
+
+.btn-icon .icon-left {
+    padding-right: 8px;
+}
+
+.btn-icon-right {
+    padding: 0 12px;
+}
+
+.btn-seconds {
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #000;
+    padding: 0 24px;
+    text-align: center;
+    border: 1px solid #bbb;
+    height: 40px;
+}
+
+.btn-seconds:hover {
+    background-color: #E9EBEE;
+}
+
+.btn-seconds--pressed {
+    background-color: #01B075;
+}
