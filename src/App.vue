@@ -1,26 +1,22 @@
 <template>
   <div id="app">
-    <TheHeader />
-    <div class="main">
-      <TheNavbar />
-      <TheContent />
-    </div>
+    <Employee />
   </div>
 </template>
 
 <script>
-import TheContent from './components/layout/TheContent.vue'
-import TheHeader from './components/layout/TheHeader.vue'
-import TheNavbar from './components/layout/TheNavbar.vue'
+import Employee from './components/views/Employee.vue'
 export default {
   name: 'App',
   components: {
-    TheHeader, TheNavbar,
-    TheContent
+    Employee
   }
 }
 </script>
 
 <style>
-@import './css/main.css'
+@import '../lib/fontawesome-5.15.1/css/all.min.css';
+@import './css/main.css';
+@import './css/common/common.css';
+@import './css/common/text.css';
 </style>

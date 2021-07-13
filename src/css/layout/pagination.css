@@ -1,0 +1,58 @@
+
+/*
+*   CSS Paging bar
+*
+*/
+
+.paging-bar {
+    display: flex;
+    height: 56px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
+    padding-bottom: 16px;
+}
+
+.paging-bar .paging-center {
+    display: flex;
+}
+
+.paging-bar .paging-center .paging-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 25px;
+    margin: 0 8px;
+    cursor: pointer;
+}
+
+.paging-bar .paging-center .paging-control {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.paging-bar .paging-center .paging-number {
+    background-color: #dddddd;
+    border: 1px solid #cccccc;
+}
+
+.paging-bar .paging-center .paging-number:hover {
+    background-color: white;
+}
+
+.paging-bar .paging-center .paging-number--active {
+    background-color: #01B075;
+    color: white;
+    border: 0;
+}
+
+.paging-bar .paging-center .paging-number--active:hover {
+    background-color: #01B075;
+    color: white;
+    border: 0;
+}

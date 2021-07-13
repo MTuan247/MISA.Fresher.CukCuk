@@ -22,6 +22,30 @@
     cursor: pointer;
 }
 
+.navbar .navbar-content #overview .nav-item-icon {
+    background-image: url('../../assets/icon/dashboard.png')
+}
+
+.navbar .navbar-content #report .nav-item-icon {
+    background-image: url('../../assets/icon/report.png')
+}
+
+.navbar .navbar-content #shop .nav-item-icon {
+    background-image: url('../../assets/icon/dashboard.png')
+}
+
+.navbar .navbar-content #customer .nav-item-icon {
+    background-image: url('../../assets/icon/dic-employee.png')
+}
+
+.navbar .navbar-content #employee .nav-item-icon {
+    background-image: url('../../assets/icon/dic-employee.png')
+}
+
+.navbar .navbar-content #setting .nav-item-icon {
+    background-image: url('../../assets/icon/setting.png')
+}
+
 .navbar .navbar-content .nav-item:hover {
     background-color: #BBBBBB;
 }
