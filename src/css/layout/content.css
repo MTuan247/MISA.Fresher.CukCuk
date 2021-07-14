@@ -70,17 +70,7 @@
     margin-left: 16px;
 }
 
-.filter-bar .refresh {
-    background-repeat: no-repeat;
-    background-position: center;
-    cursor: pointer;
-    background-image: url('../../assets/icon/refresh.png');
-}
-
 .filter-bar .delete {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 0;
     width: 48px;
 }

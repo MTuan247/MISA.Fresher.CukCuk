@@ -24,38 +24,59 @@
                 <!-- <tr :key="row.EmployeeCode" v-for="row in this.rows" >
                     <td v-for="col in columns" :key="col.fieldName" >{{row[col.fieldName]}}</td>
                 </tr> -->
+                <!-- <tr :key="record.EmployeeId" v-for="(record, index) in rows" >
+                    <td class="check-box">
+                        <div class="custom-checkbox">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </div>
+                        <input type="checkbox" name="" id="">
+                    </td>
+                    <td>{{index + 1}}</td>
+                    <td>{{record.EmployeeCode}}</td>
+                    <td>{{record.FullName}}</td>
+                    <td>{{record.GenderName}}</td>
+                    <td class="text-align-center">{{record.DateOfBirth | formatData("DateOfBirth") }}</td>
+                    <td>{{record.PhoneNumber}}</td>
+                    <td>{{record.Email}}</td>
+                    <td class="text-align-right">{{record.Salary | formatData("Salary")}}</td>
+                    <td>{{record.PositionName }}</td>
+                    <td>{{record.DepartmentName}}</td>
+                    <td>{{record.WorkStatus | formatData("WorkStatus")}}</td>
+                </tr> -->
+                <tr :employeeId="row.employeeId" v-for="(row, index) in rows" :key="row.EmployeeId">
+                    <td class="check-box">
+                        <div class="custom-checkbox">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </div>
+                        <input type="checkbox" name="" id="">
+                    </td>
+                    <td>{{index + 1}}</td>
+                    <td v-for="col in columns.slice(2)" :key="col.fieldName">
+                        {{ row[col.fieldName] | formatData(col.fieldName) }}
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
 </template>
 
 <script>
-    import axios from 'axios'
     import {formatCell, formatData} from '../../js/common/format'
     import { getDataById } from '../../js/common/crud'
 
     var $ = require('jquery')
     export default {
         name: 'BaseGridTable',
-        props: ['columns'],
-        data() {
-            return {
-                rows: []
+        props: ['columns', 'rows'],
+        
+        filters: {
+            formatData: function(value, fieldName) {
+                return formatData(value, fieldName)
             }
         },
-        created() {     
-            axios.get(`http://cukcuk.manhnv.net/v1/Employees`)
-            .then((response) => {
-                this.rows = response.data;
-                // console.log(response.data);
-                // console.log(response.status);
-                // console.log(response.statusText);
-                // console.log(response.headers);
-                // console.log(response.config);
-                
-                this.bindData(response.data)
-                this.initEvents()
-            });
+
+        mounted() {
+            this.initEvents()
         },
         methods: {
             /**
@@ -98,6 +119,7 @@
                 $("table").on('dblclick', 'tbody tr', function () {
                     me.showModal()
                     let employeeId = $(this).attr('employeeId')
+                    $('.modal .info-form').attr('employeeId', employeeId)
                     getDataById(employeeId)
                 })
             },

@@ -21,14 +21,14 @@
     background-image: url('../../assets/icon/search.png');
 }
 
-.field > input {
+.field input {
     border: 0;
     border-radius: 4px;
     width: 100%;
     height: 100%;
 }
 
-.field > input::placeholder {
+.field input::placeholder {
     font-size: 12px;
 }
 
@@ -81,7 +81,7 @@
     color: #000000;
 }
 
-.field > .icon-right {
+.field .icon-right {
     cursor: pointer;
     display: none;
     /* opacity: 0; */
@@ -91,7 +91,7 @@
     z-index: 99;
 }
 
-.field-label > .icon-right {
+.field-label .icon-right {
     cursor: pointer;
     display: none;
     /* opacity: 0; */

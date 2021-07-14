@@ -49,6 +49,8 @@
 
 .btn-seconds {
     cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
     border-radius: 4px;
     font-size: 13px;
     color: #000;
@@ -56,6 +58,10 @@
     text-align: center;
     border: 1px solid #bbb;
     height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-seconds:hover {

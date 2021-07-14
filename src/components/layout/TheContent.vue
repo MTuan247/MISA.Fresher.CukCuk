@@ -45,15 +45,21 @@
 
             </div>
             <div class="btn-action-area">
-                <div class="refresh btn-seconds btn-action" >
-                </div>
-                <div class="delete btn-seconds btn-action">
-                    <i class="far fa-trash-alt"></i>
-                </div>
+                <BaseButton 
+                    btnClass="refresh btn-seconds btn-action"
+                    background="'./assets/icon/refresh.png'"
+                    :clickEvent="this.refresh"
+                />
+                <BaseButton
+                    i="far fa-trash-alt"
+                    btnClass="delete btn-seconds btn-action"
+                    :clickEvent="this.delete"
+                />
             </div>
         </div>
         <BaseGridTable 
             :columns="this.columns"
+            :rows="this.rows"
         />
         <ThePagination />
     </div>
@@ -64,6 +70,13 @@
     import BaseCombobox from '../base/BaseCombobox.vue';
     import BaseGridTable from '../base/BaseGridTable.vue' 
     import ThePagination from './ThePagination.vue'
+
+    import {getData} from '../../js/common/crud'
+
+    import { resetForm } from '../../js/base/form'
+    import { getNewCode } from '../../js/common/crud'
+    import { showAlarmPopup } from '../../js/base/popup';
+
     var $ = require('jquery')
 
     export default {
@@ -99,7 +112,7 @@
                     {
                         title: 'Ngày sinh',
                         fieldName: 'DateOfBirth',
-                        style: 'width: 150px;',
+                        style: 'width: 150px; text-align: center',
                     },
                     {
                         title: 'Điện thoại',
@@ -132,16 +145,41 @@
                         style: 'width: 200px;',
                     }
                 ],
+                rows: [],
             }
         },
         components: {
             BaseButton, BaseCombobox, BaseGridTable, ThePagination
         },
+        mounted: function(){
+            getData((response) => {
+                this.rows = response.data
+            })
+        },
+
         methods: {
-            showModal() {
+            async showModal() {
                 $('.modal').show()
                 $('.modal .info-form input').first().focus()
+                resetForm('.modal')
+                $('.modal .info-form').attr('employeeId', '')
+                let newCode = await getNewCode()
+                $('.info-form .field-label').first().find('input').val(newCode)
+            },
+
+            refresh() {
+                getData((response) => {
+                    this.rows = response.data
+                })
+            },
+
+            delete() {
+                showAlarmPopup(() => {
+                    console.log('Deleted')
+                })
             }
+
+
         }
     }
 </script>
@@ -151,5 +189,6 @@
 @import '../../css/layout/content.css';
 @import '../../css/base/input.css';
 @import '../../css/base/button.css';
+@import '../../css/base/popup.css';
 
 </style>

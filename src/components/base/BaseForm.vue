@@ -38,18 +38,6 @@
                             </div>
                             <div fieldName="GenderName" class="field-label form__field-input">
                                 <div class="label">Giới tính</div>
-                                <!-- <div class="combo-box" tabindex="0">
-                                    <input type="text" class="value combo-box__text" value="" />
-                                    <i class="fa fa-angle-down combo-box__icon" aria-hidden="true"></i>
-                                    <div class="collapse">
-                                        <div class="combo-box__item combo-box__item--show"><i class="fa fa-check icon-left"
-                                                aria-hidden="true"></i>Không xác định</div>
-                                        <div class="combo-box__item combo-box__item--show"><i class="fa fa-check icon-left"
-                                                aria-hidden="true"></i>Nam</div>
-                                        <div class="combo-box__item combo-box__item--show"><i class="fa fa-check icon-left"
-                                                aria-hidden="true"></i>Nữ</div>
-                                    </div>
-                                </div> -->
                                 <BaseCombobox 
                                     :extraData="[{ title: 'Nam' }, { title: 'Nữ' }, { title: 'Không xác định'}]"
                                 />
@@ -120,26 +108,38 @@
                             </div>
 
                             <div fieldName="PersonalTaxCode" class="field-label form__field-input">
-                                <div class="label">Mã số thuế cá nhân</div>
-                                <input class="field__input" type="number" name="" id="">
-                                <i class="fa fa-times icon-right" aria-hidden="true"></i>
+                                <BaseInput 
+                                    inputLabel="Mã số thuế cá nhân"
+                                    inputClass="field__input"
+                                    inputType="number"
+                                />
                             </div>
 
                             <div fieldName="Salary" fieldType="Money" class="field-label form__field-input">
-                                <div class="label">Mức lương cơ bản</div>
-                                <input type="text" id="salary" maxlength="15" name="">
-                                <i class="fa fa-times icon-right" aria-hidden="true"></i>
+                                <BaseInput 
+                                    inputLabel="Mức lương cơ bản"
+                                    inputClass="field__input"
+                                    inputType="text"
+                                    inputId="salary"
+                                    :inputMaxlength="15"
+                                />
                             </div>
 
                             <div fieldName="JoinDate" fieldType="Date" class="field-label form__field-input">
-                                <div class="label">Ngày gia nhập công ty</div>
-                                <input class="field__input" type="date" name="" id="">
+                                <BaseInput 
+                                    inputLabel="Ngày gia nhập công ty"
+                                    inputClass="field__input"
+                                    inputType="date"
+                                    :clearIcon="false"
+                                />
                             </div>
 
                             <div fieldName="WorkStatus" class="field-label form__field-input">
-                                <div class="label">Tình trạng công việc</div>
-                                <input class="field__input" type="number" name="" id="">
-                                <i class="fa fa-times icon-right" aria-hidden="true"></i>
+                                <BaseInput 
+                                    inputLabel="Tình trạng công việc"
+                                    inputClass="field__input"
+                                    inputType="text"
+                                />
                             </div>
 
                         </div>
@@ -147,30 +147,55 @@
                 </div>
             </div>
             <div class="form__footer">
-                <input type="reset" id="cancel" value="Hủy" class="btn-seconds" title="Hủy">
-                <input id="submit" type="submit" class="btn-icon" value="Lưu" title="Lưu">
+                <BaseButton 
+                    id="cancel"
+                    btnClass="btn-seconds"
+                    title="Hủy"
+                    :clickEvent="this.hideForm"
+                />
+                <BaseButton 
+                    id="submit"
+                    btnClass="btn-icon"
+                    title="Lưu"
+                    :clickEvent="this.submitForm"
+                />
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import BaseCombobox from './BaseCombobox.vue'
     import axios from 'axios'
+
+    import BaseCombobox from './BaseCombobox.vue'
+    import { validateInput } from '../../js/common/validate'
+    import { checkFormValid } from '../../js/base/form'
+    import BaseButton from './BaseButton.vue'
+    import BaseInput from './BaseInput.vue'
+
+    import {showWarningPopup} from '../../js/base/popup'
+    import { addData, updateData } from '../../js/common/crud'
     var $ = require('jquery')
     export default {
         name: 'BaseForm',
         components: {
-            BaseCombobox
+            BaseCombobox, BaseButton,
+                BaseInput
         },
-        props: ['baseUrl'],
+        mounted: function() {
+            this.initEvents()
+        },
         methods: {
-            resetForm() {
-                $('.info-form').find('.form__field-input').find('input').val("")
+
+            initEvents(){
+                $(".field-label").focusout(function () {
+                    validateInput(this)
+                });
             },
 
             hideForm() {
-                $('.modal').hide()
+                // $('.modal').hide()
+                showWarningPopup()
             },
 
             postForm(data) {
@@ -178,12 +203,41 @@
                 .then((res) => {
                     console.log(res)
                 })
-            }
+            },
 
+            submitForm() {
+                if (!checkFormValid(this.$el)) return;
+                let data = {}
+                $(this.$el).find('.form__field-input').each((index, item) => {
+                    let fieldName = $(item).attr('fieldName')
+                    let fieldType = $(item).attr('fieldType')
+                    let value = $(item).find('input').val()
+                    if(fieldType == 'Date') value = new Date(value)
+                    else if(fieldType == 'Money') {
+                        value = value.replaceAll('.','')
+                        value = value.replaceAll(',','')
+                        value = parseInt(value)
+                    } else if (fieldName == 'GenderName') {
+                        if (value == 'Nam') data['Gender'] = 1;
+                        else if (value == 'Nữ') data['Gender'] = 0;
+                        else if (value == 'Không xác định') data['Gender'] = 2;
+                    }
+                    data[fieldName] = value;
+                })
+                let employeeId = $('.modal .info-form').attr('employeeId')
+                if (employeeId == '') {
+                    addData(data)
+                } else if (employeeId != '') {
+                    data["employeeId"] = employeeId;
+                    updateData(data, employeeId)
+                    this.$parent.refresh()
+                }
+                $('.modal').fadeOut()
+            }
         }
     }
 </script>
 
 <style scoped>
-@import '../../css/base/form.css'
+@import '../../css/base/form.css';
 </style>
