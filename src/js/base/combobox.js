@@ -82,7 +82,7 @@ export function detectSelectDropdownItem() {
         let items = $(dropdown[i]).find('.combo-box__item');
         for (let j = 0; j < items.length; j++) {
             let item = items[j]
-            if ($(item).text() == $(value).val()) {
+            if ($(item).text().trim() == $(value).val().trim()) {
                 $(item).addClass('combo-box__item--selected')
             } else {
                 $(item).removeClass('combo-box__item--selected')
@@ -113,31 +113,6 @@ export function detectItemMatched(el) {
             $(item).removeClass('combo-box__item--show')
         }
     })
-}
-
-/**
- * Hàm load dữ liệu từ api đổ vào combo-box
- * Author: NMTuan (09/07/2021)
- * @param {element} el element combo-box
- * @param {url} url đường dẫn đến api
- * @param {string} name tên trường cần hiển thị
- * @param {string} id id của item
- * @param {function} func callback truyền vào hàm thực thi sau khi load xong
- */
-export function loadCollapse(el, url, name, id, func = function(){}) {
-    let me = this
-    try {
-        $.ajax({
-            url: url,
-            method: "get",
-            success: function(response){
-                me.bindCollapse(response, el ,name, id)
-                func()
-            }
-        })
-    } catch (error) {
-        console.log(error)
-    }
 }
 
 /**
@@ -196,8 +171,8 @@ export function addDataToAllItem() {
  */
 export function addDataToCombobox(el) {
     let combobox = $(el).closest('.combo-box')
-    combobox.data('value', $(el).data('value'))
-    combobox.data('text', $(el).data('text'))
+    combobox.attr('val', $(el).attr('val'))
+    combobox.attr('text', $(el).text())
 }
 
 /**
@@ -260,10 +235,10 @@ export function prevItem(el) {
  * @param {element} el combobox
  */
 export function checkItemExist(el) {
-    let text = $(el).find('input').val()
+    let text = $(el).find('input').val().trim()
     let rs = false;
     $(el).find('.combo-box__item').each((index, item) => {
-        if ( $(item).text() == text ) {
+        if ( $(item).text().trim() == text ) {
             rs = true
             $(el).removeClass('combo-box--error')
             $(el).attr('title', '')

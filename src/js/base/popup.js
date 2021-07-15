@@ -1,6 +1,6 @@
 var $ = require('jquery')
 
-export function showPopup(type, title, message, callback) {
+export function showPopup(type, title, message, callback = function(){}, confirm="Xác nhận") {
     $('body').append(`
         <div class="popup__background">
             <div class="popup popup--${type}">
@@ -18,7 +18,7 @@ export function showPopup(type, title, message, callback) {
                 </div>
                 <div class="popup__footer">
                     <div class="btn-seconds cancel" >Hủy</div>
-                    <div class="btn-default confirm">Xác nhận</div>
+                    <div class="btn-default confirm">${confirm}</div>
                 </div>
             </div>
         </div>   
@@ -82,7 +82,7 @@ export function showWarningPopup(){
             <div class="popup popup--warning">
                 <div class="popup__header">
                     <div class="popup__title">Đóng form nhập thông tin</div>
-                    <div class="popup__close" onclick="hidePopup()" ></div>
+                    <div class="popup__close" ></div>
                 </div>
                 <div class="popup__body">
                     <div class="popup__icon">
@@ -93,7 +93,7 @@ export function showWarningPopup(){
                     </div>
                 </div>
                 <div class="popup__footer">
-                    <div class="btn-seconds cancel" onclick="hidePopup()" >Hủy</div>
+                    <div class="btn-seconds cancel" >Hủy</div>
                     <div class="btn-default confirm">Đóng</div>
                 </div>
             </div>

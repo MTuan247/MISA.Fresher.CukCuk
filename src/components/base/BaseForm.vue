@@ -14,72 +14,88 @@
                     <div class="area">
                         <div class="content__header">A.Thông tin chung</div>
                         <div class="form__input">
+
                             <div fieldName="EmployeeCode" class="field-label form__field-input">
-                                <div class="input-warning">
-                                    <span>Định dạng không đúng</span>
-                                    <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                </div>
-                                <div class="label">Mã nhân viên (<span style="color: red;">*</span>)</div>
-                                <input class="field__input" type="text" name="" id="" required>
-                                <i class="fa fa-times icon-right" aria-hidden="true"></i>
+                                <BaseInput 
+                                    inputLabel="Mã nhân viên"
+                                    inputClass="field__input"
+                                    :tooltip="true"
+                                    :required="true"
+                                />
                             </div>
+
                             <div fieldName="FullName" class="field-label form__field-input">
-                                <div class="input-warning">
-                                    <span>Định dạng không đúng</span>
-                                    <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                </div>
-                                <div class="label">Họ và tên (<span style="color: red;">*</span>)</div>
-                                <input class="field__input" type="text" name="" id="" required>
-                                <i class="fa fa-times icon-right" aria-hidden="true"></i>
+                                <BaseInput 
+                                    inputLabel="Họ và tên"
+                                    inputClass="field__input"
+                                    :tooltip="true"
+                                    :required="true"
+                                />
                             </div>
+
                             <div fieldName="DateOfBirth" fieldType="Date" class="field-label form__field-input">
-                                <div class="label">Ngày sinh</div>
-                                <input class="field__input" type="date" name="" id="">
+                                <BaseInput 
+                                    inputLabel="Ngày sinh"
+                                    inputClass="field__input"
+                                    inputType="date"
+                                    :clearIcon="false"
+                                />
                             </div>
+
                             <div fieldName="GenderName" class="field-label form__field-input">
                                 <div class="label">Giới tính</div>
                                 <BaseCombobox 
                                     :extraData="[{ title: 'Nam' }, { title: 'Nữ' }, { title: 'Không xác định'}]"
                                 />
                             </div>
+
                             <div fieldName="IdentityNumber" class="field-label form__field-input">
-                                <div class="input-warning">
-                                    <span>Định dạng không đúng</span>
-                                    <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                </div>
-                                <div class="label">Số CMTND/ Căn cước (<span style="color: red;">*</span>)</div>
-                                <input class="field__input" type="number" name="" id="" required>
-                                <i class="fa fa-times icon-right" aria-hidden="true"></i>
+                                <BaseInput
+                                    inputLabel="Số CMTND/ Căn cước"
+                                    inputClass="field__input"
+                                    inputType="number"
+                                    :required="true"
+                                    :tooltip="true" 
+                                />
+
                             </div>
+
                             <div fieldName="IdentityDate" fieldType="Date" class="field-label form__field-input">
-                                <div class="label">Ngày cấp</div>
-                                <input class="field__input" type="date" name="" id="">
+                                <BaseInput 
+                                    inputLabel="Ngày cấp"
+                                    inputClass="field__input"
+                                    inputType="date"
+                                    :clearIcon="false"
+                                />
                             </div>
+
                             <div fieldName="IdentityPlace" class="field-label form__field-input">
-                                <div class="label">Nơi cấp</div>
-                                <input class="field__input" type="text" name="" id="">
-                                <i class="fa fa-times icon-right" aria-hidden="true"></i>
+                                <BaseInput 
+                                    inputLabel="Nơi cấp"
+                                    inputClass="field__input"
+                                />
                             </div>
+
                         </div>
                         <div class="form__input">
                             <div fieldName="Email" class="field-label form__field-input">
-                                <div class="input-warning">
-                                    <span>Định dạng không đúng</span>
-                                    <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                </div>
-                                <div class="label">Email (<span style="color: red;">*</span>)</div>
-                                <input class="field__input" type="email" name="" id="" required>
-                                <i class="fa fa-times icon-right" aria-hidden="true"></i>
+                                <BaseInput 
+                                    inputLabel="Email"
+                                    inputClass="field__input"
+                                    inputType="email"
+                                    :tooltip="true"
+                                    :required="true"
+                                />
                             </div>
                             <div fieldName="PhoneNumber" class="field-label form__field-input">
-                                <div class="input-warning">
-                                    <span>Định dạng không đúng</span>
-                                    <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                </div>
-                                <div class="label">Số điện thoại (<span style="color: red;">*</span>)</div>
-                                <input class="field__input" type="tel" name="" id="" pattern="^[0-9\-\+]{9,15}$"
-                                    required>
-                                <i class="fa fa-times icon-right" aria-hidden="true"></i>
+                                <BaseInput 
+                                    inputLabel="Số điện thoại"
+                                    inputClass="field__input"
+                                    pattern="^[0-9\-\+]{9,15}$"
+                                    inputType="tel"
+                                    :required="true"
+                                    :tooltip="true"
+                                />
                             </div>
                         </div>
                     </div>
@@ -191,6 +207,14 @@
                 $(".field-label").focusout(function () {
                     validateInput(this)
                 });
+
+                $('#salary').on('input',function() {
+                    let value = $(this).val()
+                    value = value.replaceAll('.','')
+                    value = value.replaceAll(',','')
+                    value = Number(value).toLocaleString('it-IT');
+                    $(this).val(value)
+                })
             },
 
             hideForm() {
@@ -230,7 +254,6 @@
                 } else if (employeeId != '') {
                     data["employeeId"] = employeeId;
                     updateData(data, employeeId)
-                    this.$parent.refresh()
                 }
                 $('.modal').fadeOut()
             }

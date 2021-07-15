@@ -1,31 +1,75 @@
 <template>
-    <div :data-type="dataType" :id="id" class="combo-box" :class="comboboxClass" tabindex="0">
-        <input type="text" class="value combo-box__text" :value="placeholder" />
+    <div 
+        :data-type="dataType" 
+        :id="id" class="combo-box" 
+        :class="comboboxClass" 
+        val=''
+        tabindex="0"
+        @keydown.up="pressUpEvent"
+        @keydown.down="pressDownEvent"
+        @keydown.enter="pressEnterEvent"
+    >
+        
+        <input 
+            type="text" 
+            class="value combo-box__text" 
+            :value="placeholder" 
+            @input="inputEvent"
+            @focus="inputFocusEvent"
+            @focusout="inputFocusoutEvent"
+        />
+
         <i class="fa fa-angle-down combo-box__icon" @click="iconClickEvent" aria-hidden="true"></i>
+        
         <div class="collapse">
-            <!-- <div class="combo-box__item combo-box__item--show"><i class="fa fa-check icon-left" aria-hidden="true"></i>Tất cả phòng ban</div> -->
-            <div v-for="item in extraData" :key='item.title' class="combo-box__item combo-box__item--show"><i class="fa fa-check icon-left" aria-hidden="true"></i>{{ item.title }}</div>
+
+            <div 
+                v-for="item in extraData" 
+                :key='item.title' 
+                :val='item.val'
+                class="combo-box__item combo-box__item--show"
+                @click="itemClickEvent"
+            >
+                <i class="fa fa-check icon-left" aria-hidden="true"></i>{{ item.title }}
+            </div>
+
+            <div
+                v-for="item in data" 
+                :key='item[fieldId]'
+                :val='item[fieldId]'
+                class="combo-box__item combo-box__item--show"
+                @click="itemClickEvent"
+            >
+                <i class="fa fa-check icon-left" aria-hidden="true"></i>{{ item[fieldName] }}
+            </div>
+
         </div>
     </div>
 </template>
 
 <script>
-    import {toggleFade, bindCollapse, selectItem, collapseFadeOut, detectItemMatched, collapseFadeIn, checkItemExist, nextItem, prevItem} from '../../js/base/combobox'
+    import {toggleFade, selectItem, detectItemMatched, checkItemExist, nextItem, prevItem, collapseFadeOut, collapseFadeIn} from '../../js/base/combobox'
     import axios from 'axios'
     var $ = require('jquery')
     export default {
         name: 'BaseCombobox',
         props: ['dataType', 'id', 'comboboxClass', 'placeholder', 'api', 'fieldName', 'fieldId', 'extraData'],
-        mounted: function() {
+        data() {
+            return {
+                text: this.placeholder,
+                value: '',
+                data: [],
+            }
+        },
+        created() {
             if(this.api) {
                 axios.get(this.api)
                 .then((response) => {
-                    bindCollapse(response.data, this.$el, this.fieldName, this.fieldId)
-                    this.initEvents()
+                    this.data = response.data
                 })
-            } else {
-                this.initEvents()
             }
+        },
+        mounted: function() {
         },
         methods: {
             iconClickEvent() {
@@ -34,54 +78,43 @@
                 toggleFade(this.$el)
             },
 
-            /**
-             * Hàm xử lí các event
-             * Author: NMTuan (13/07/2021)
-             */
-            initEvents() {
-                $(this.$el).on('click', '.combo-box__item', function () {
-                    selectItem(this)
-                    collapseFadeOut($(this).closest('.combo-box'))
-                });
+            itemClickEvent(event) {
+                selectItem(event.target)
+                collapseFadeOut($(event.target).closest('.combo-box'))
+            },
 
-                $(this.$el).on('input', '.value', function () {
-                    detectItemMatched($(this).parent())
-                })
+            inputEvent() {
+                detectItemMatched(this.$el)
+            },
 
-                $(this.$el).find('input').focus(function(){
-                    collapseFadeIn($(this).parent())
-                    $(this).parent().addClass('combo-box--focus')
-                })
+            inputFocusEvent() {
+                collapseFadeIn(this.$el)
+                $(this.$el).addClass('combo-box--focus')
+            },
 
-                $(this.$el).find('input').focusout(function(){
-                    $(this).parent().removeClass('combo-box--focus')
-                    checkItemExist($(this).parent())
-                })
+            inputFocusoutEvent() {
+                $(this.$el).removeClass('combo-box--focus')
+                checkItemExist(this.$el)
+            },
 
-                $(this.$el).keydown(function(e){
-                    if (e.which == 38) { //up
-                        prevItem(this)
-                        return false;
-                    }
-                    if (e.which == 40) { //down
-                        nextItem(this)
-                        return false;
-                    }
-                });
+            pressDownEvent() {
+                nextItem(this.$el)
+            },
 
-                $(this.$el).keydown(function (e) {
-                    let combobox = $(this)
-                    if (e.code == "Enter") {
-                        if (combobox.find('.collapse').css('display') == 'none') {
-                            toggleFade(combobox)
-                        } else {
-                            let focusedItem = combobox.find('.combo-box__item--focus')
-                            selectItem(focusedItem)
-                            toggleFade(combobox)
-                        }
-                    }
-                });
-            }
+            pressUpEvent() {
+                prevItem(this.$el)
+            },
+
+            pressEnterEvent() {
+                let combobox = $(this.$el)
+                if (combobox.find('.collapse').css('display') == 'none') {
+                    toggleFade(combobox)
+                } else {
+                    let focusedItem = combobox.find('.combo-box__item--focus')
+                    selectItem(focusedItem)
+                    toggleFade(combobox)
+                }
+            },
         }
     }
 </script>

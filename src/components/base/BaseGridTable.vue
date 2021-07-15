@@ -43,7 +43,7 @@
                     <td>{{record.DepartmentName}}</td>
                     <td>{{record.WorkStatus | formatData("WorkStatus")}}</td>
                 </tr> -->
-                <tr :employeeId="row.employeeId" v-for="(row, index) in rows" :key="row.EmployeeId">
+                <tr :employeeId="row.EmployeeId" v-for="(row, index) in rows" :key="row.EmployeeId">
                     <td class="check-box">
                         <div class="custom-checkbox">
                             <i class="fa fa-check" aria-hidden="true"></i>
@@ -51,7 +51,7 @@
                         <input type="checkbox" name="" id="">
                     </td>
                     <td>{{index + 1}}</td>
-                    <td v-for="col in columns.slice(2)" :key="col.fieldName">
+                    <td :style="col.style" v-for="col in columns.slice(2)" :key="col.fieldName">
                         {{ row[col.fieldName] | formatData(col.fieldName) }}
                     </td>
                 </tr>

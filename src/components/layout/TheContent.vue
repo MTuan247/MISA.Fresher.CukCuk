@@ -28,7 +28,7 @@
                     fieldName="DepartmentName"
                     fieldId="DepartmentId"
                     placeholder="Tất cả phòng ban"
-                    :extraData='[{title: "Tất cả phòng ban"}]'
+                    :extraData='[{title: "Tất cả phòng ban", val: ""}]'
                 />
 
                 <BaseCombobox
@@ -39,7 +39,7 @@
                     fieldName="PositionName"
                     fieldID="PositionId"
                     placeholder="Tất cả vị trí"
-                    :extraData="[{title:'Tất cả vị trí'}]"
+                    :extraData="[{title:'Tất cả vị trí', val: ''}]"
                 />
                 
 
@@ -71,11 +71,11 @@
     import BaseGridTable from '../base/BaseGridTable.vue' 
     import ThePagination from './ThePagination.vue'
 
-    import {getData} from '../../js/common/crud'
+    import {deleteMultiple, getData} from '../../js/common/crud'
 
     import { resetForm } from '../../js/base/form'
     import { getNewCode } from '../../js/common/crud'
-    import { showAlarmPopup } from '../../js/base/popup';
+    import { showAlarmPopup, showPopup } from '../../js/base/popup';
 
     var $ = require('jquery')
 
@@ -168,14 +168,26 @@
             },
 
             refresh() {
-                getData((response) => {
-                    this.rows = response.data
-                })
+                console.log(this.em)
+                // getData((response) => {
+                //     this.rows = response.data
+                // })
             },
 
             delete() {
-                showAlarmPopup(() => {
-                    console.log('Deleted')
+                let employeeIds = []
+                $('table tbody').find('tr.selected').each((index, item) => {
+                    let employeeId = $(item).attr('employeeId')
+                    employeeIds.push(employeeId)
+                })
+                if (employeeIds.length == 0) {
+                    showPopup('warning', 'Xóa bản ghi', 'Bạn chưa chọn bản ghi cần xóa!', function(){}, 'Đóng')
+                } else showAlarmPopup(() => {
+                    deleteMultiple(employeeIds, () => {
+                        setTimeout(() => {
+                            this.refresh()
+                        }, 1000)
+                    })
                 })
             }
 
@@ -188,7 +200,7 @@
 
 @import '../../css/layout/content.css';
 @import '../../css/base/input.css';
-@import '../../css/base/button.css';
 @import '../../css/base/popup.css';
+@import '../../css/base/toast.css';
 
 </style>
