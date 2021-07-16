@@ -7,7 +7,7 @@
                 btnClass="content-title-btn btn-icon"
                 icon="'./assets/icon/add.png'"
                 title="Thêm nhân viên"
-                :clickEvent="this.showModal"
+                :clickEvent="openModal"
             />
         </div>
         <div class="filter-bar">
@@ -60,6 +60,7 @@
         <BaseGridTable 
             :columns="this.columns"
             :rows="this.rows"
+            @openModal='openModal'
         />
         <ThePagination />
     </div>
@@ -81,6 +82,8 @@
 
     export default {
         name: "TheContent",
+        props: {
+        },
         data() {
             return {
                 columns: [
@@ -163,15 +166,14 @@
                 $('.modal .info-form input').first().focus()
                 resetForm('.modal')
                 $('.modal .info-form').attr('employeeId', '')
-                let newCode = await getNewCode()
-                $('.info-form .field-label').first().find('input').val(newCode)
+                this.newCode = await getNewCode()
+                $('.info-form .field-label').first().find('input').val(this.newCode)
             },
 
             refresh() {
-                console.log(this.em)
-                // getData((response) => {
-                //     this.rows = response.data
-                // })
+                getData((response) => {
+                    this.rows = response.data
+                })
             },
 
             delete() {
@@ -189,7 +191,11 @@
                         }, 1000)
                     })
                 })
-            }
+            },
+
+            openModal(id) {
+                this.$emit('openModal', id)
+            },
 
 
         }

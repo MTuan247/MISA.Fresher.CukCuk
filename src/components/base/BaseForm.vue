@@ -21,6 +21,8 @@
                                     inputClass="field__input"
                                     :tooltip="true"
                                     :required="true"
+                                    :modelValue="this.employeeCode"
+                                    @update="this.employeeCode = $event"
                                 />
                             </div>
 
@@ -30,6 +32,8 @@
                                     inputClass="field__input"
                                     :tooltip="true"
                                     :required="true"
+                                    :modelValue="this.fullName"
+                                    @update="this.fullName = $event"
                                 />
                             </div>
 
@@ -39,6 +43,8 @@
                                     inputClass="field__input"
                                     inputType="date"
                                     :clearIcon="false"
+                                    :modelValue="this.dateOfBirth | formatDate"
+                                    @update="this.dateOfBirth = $event"
                                 />
                             </div>
 
@@ -181,26 +187,67 @@
 </template>
 
 <script>
-    import axios from 'axios'
 
     import BaseCombobox from './BaseCombobox.vue'
     import { validateInput } from '../../js/common/validate'
     import { checkFormValid } from '../../js/base/form'
+    import { formatDateInput } from '../../js/common/format'
     import BaseButton from './BaseButton.vue'
     import BaseInput from './BaseInput.vue'
 
-    import {showWarningPopup} from '../../js/base/popup'
-    import { addData, updateData } from '../../js/common/crud'
+    // import {showWarningPopup} from '../../js/base/popup'
+    import { addData, getDataById, getNewCode, updateData } from '../../js/common/crud'
     var $ = require('jquery')
     export default {
         name: 'BaseForm',
+        props: ['entityId'],
+        data() {
+            return {
+                employeeCode: null,
+                fullName: null,
+                dateOfBirth: null,
+                genderName: null,
+                identityNumber: null,
+                identityDate: null,
+                identityPlace: null,
+                phoneNumber: null,
+                positionName: null,
+                departmentName: null,
+                personalTaxCode: null,
+                salary: null,
+                joinDate: null,
+                workStatus: null,
+            }
+        },
+
+        filters: {
+            formatDate: function(value) {
+                return formatDateInput(value);
+            }
+        },
+
         components: {
             BaseCombobox, BaseButton,
                 BaseInput
         },
+
         mounted: function() {
             this.initEvents()
         },
+            
+        watch: {
+            entityId: async function (val) {
+                if (val) {
+                    getDataById(val, (response) => {
+                        this.setForm(response)
+                    })
+                } else {
+                    this.resetFrom()
+                    this.employeeCode = await getNewCode()
+                }
+            }
+        },
+
         methods: {
 
             initEvents(){
@@ -218,15 +265,42 @@
             },
 
             hideForm() {
-                // $('.modal').hide()
-                showWarningPopup()
+                // showWarningPopup()
+                this.$emit('closeModal')
             },
 
-            postForm(data) {
-                axios.post(this.baseUrl, data)
-                .then((res) => {
-                    console.log(res)
-                })
+            resetFrom() {
+                this.employeeCode= '';
+                this.fullName= '';
+                this.dateOfBirth= '';
+                this.genderName= '';
+                this.identityNumber= '';
+                this.identityDate= '';
+                this.identityPlace= '';
+                this.phoneNumber= '';
+                this.positionName= '';
+                this.departmentName= '';
+                this.personalTaxCode= '';
+                this.salary= '';
+                this.soinDate= '';
+                this.workStatus= '';
+            },
+
+            setForm(response) {
+                this.employeeCode= response['EmployeeCode'];
+                this.fullName= response['FullName'];
+                this.dateOfBirth= response['DateOfBirth'];
+                this.genderName= response['GenderName'];
+                this.identityNumber= response['IdentityNumber'];
+                this.identityDate= response['IdentityDate'];
+                this.identityPlace= response['IdentityPlace'];
+                this.phoneNumber= response['PhoneNumber'];
+                this.positionName= response['PositionName'];
+                this.departmentName= response['DepartmentName'];
+                this.personalTaxCode= response['PersonalTaxCode'];
+                this.salary= response['Salary'];
+                this.joinDate= response['JoinDate'];
+                this.workStatus= response['WorkStatus'];
             },
 
             submitForm() {
@@ -255,7 +329,7 @@
                     data["employeeId"] = employeeId;
                     updateData(data, employeeId)
                 }
-                $('.modal').fadeOut()
+                this.hideForm()
             }
         }
     }

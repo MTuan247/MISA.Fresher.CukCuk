@@ -1,40 +1,3 @@
-var $ = require('jquery')
-
-/**
- * Hàm format cell của table tùy theo loại dữ liệu
- * Author: NMTuan (05/07/2021)
- * @param {*} td 
- * @param {*} fieldName 
- * @param {*} index 
- * @returns 
- */
-function formatCell(td, fieldName, index) {
-
-    let cell = td
-
-    if (fieldName == "Checkbox") {
-        $(cell).addClass('check-box')
-        $(cell).append(`
-            <div class="custom-checkbox">
-                <i class="fa fa-check" aria-hidden="true"></i>
-            </div>
-            <input type="checkbox" name="" id="">
-        `)
-    }
-
-    if (fieldName == "Index") {
-        $(cell).append(index + 1)
-    }
-
-    if (fieldName == "Salary") {
-        $(cell).addClass("text-align-right")
-    }
-    if (fieldName == "DateOfBirth") {
-        $(cell).addClass("text-align-center")
-    }
-    return cell;
-}
-
 /* 
 * Hàm format các giá trị null
 * Author: NMTuan (05/07/2021)
@@ -52,12 +15,9 @@ function formatNull(value) {
  */
 function formatDate(value) {
     if (!value) return null;
-    // let year = value.substring(0,4)
-    // let month = value.substring(5,7)
-    // let day = value.substring(8,10)
-    // return day + "/" + month + "/" + year;
+
     let rs = new Date(value)
-    // rs = rs.toLocaleDateString()
+
     let day = rs.getDate()
     let month = rs.getMonth() + 1
     let year = rs.getFullYear()
@@ -74,7 +34,7 @@ function formatDate(value) {
  * @param {*} value 
  * @returns 
  */
-function formatDateInput(value) {
+export function formatDateInput(value) {
     if (!value) return null;
     let rs = new Date(value)
     let day = rs.getDate()
@@ -175,4 +135,4 @@ function removeAccents(str) {
     return str;
 }
 
-export {formatCell, formatData, formatDataInput, removeAccents}
+export { formatData, formatDataInput, removeAccents}

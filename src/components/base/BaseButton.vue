@@ -1,5 +1,5 @@
 <template>
-  <div :id="id" :class="btnClass" @click="this.clickEvent" :style="{ backgroundImage: 'url(' + this.background + ')' }" >
+  <div :id="id" :class="btnClass" @click="this.click" :style="{ backgroundImage: 'url(' + this.background + ')' }" >
     <div
       v-if="icon"
       class="icon-lelf div-icon iconLeft"
@@ -17,7 +17,9 @@ export default {
   computed: {
   },
   methods: {
-    
+    click() {
+      this.clickEvent('')
+    }
   }
 };
 </script>

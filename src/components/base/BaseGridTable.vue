@@ -61,8 +61,8 @@
 </template>
 
 <script>
-    import {formatCell, formatData} from '../../js/common/format'
-    import { getDataById } from '../../js/common/crud'
+    import { formatData} from '../../js/common/format'
+    // import { getDataById } from '../../js/common/crud'
 
     var $ = require('jquery')
     export default {
@@ -79,33 +79,7 @@
             this.initEvents()
         },
         methods: {
-            /**
-             * Hàm bind data vào table
-             * @author: NMTuan (08/07/2021)
-             * @param {json} response 
-             */
-            bindData(response) {
-                $(".grid table tbody").empty()
-                response.map((item, index) => {
-
-                    let tr = $('<tr></tr>')
-                    let employeeId = item.EmployeeId
-                    tr = $(tr).attr('employeeId', employeeId)
-                    let theads = $('.grid table tr th')
-                    $(theads).each((i, thead) => {
-                        let td = $(`<td></td>`)
-                        let fieldName = $(thead).attr('fieldName');
-                        let value = item[fieldName]
-                        value = formatData(value, fieldName)
-                        td = formatCell(td, fieldName, index)
-                        td.append(value)
-                        tr.append(td)
-                    })
-
-                    $(".grid table tbody").append(tr)
-                })
-            },
-
+            
             /**
              * Hàm xử lý các sự kiện
              * Author: NMTuan (13/07/2021)
@@ -117,10 +91,11 @@
                 })
 
                 $("table").on('dblclick', 'tbody tr', function () {
-                    me.showModal()
+                    // me.showModal()
                     let employeeId = $(this).attr('employeeId')
-                    $('.modal .info-form').attr('employeeId', employeeId)
-                    getDataById(employeeId)
+                    // $('.modal .info-form').attr('employeeId', employeeId)
+                    // getDataById(employeeId)
+                    me.openModal(employeeId)
                 })
             },
 
@@ -137,6 +112,10 @@
             showModal() {
                 $('.modal').show()
                 $('.modal .info-form input').first().focus()
+            },
+
+            openModal(id) {
+                this.$emit('openModal', id)
             }
         }
     }

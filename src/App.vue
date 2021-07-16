@@ -1,15 +1,15 @@
 <template>
   <div id="app">
-    <Employee />
+    <router-view />
   </div>
 </template>
 
 <script>
-import Employee from './components/views/Employee.vue'
+// import Employee from './components/views/Employee.vue'
 export default {
   name: 'App',
   components: {
-    Employee
+    // Employee
   }
 }
 </script>

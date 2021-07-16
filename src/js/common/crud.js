@@ -1,7 +1,7 @@
 import axios from 'axios'
-import {formatDataInput} from '../../js/common/format'
+// import {formatDataInput} from '../../js/common/format'
 import { showErrorToast, showToast } from '../../js/base/toast'
-var $ = require('jquery')
+// var $ = require('jquery')
 
 export function getData(callback = function(){}) {
     axios.get(`http://cukcuk.manhnv.net/v1/Employees`)
@@ -12,19 +12,20 @@ export function getData(callback = function(){}) {
     })
 }
 
-export function getDataById(id) {
+export function getDataById(id, callback=function(){}) {
     axios.get('http://cukcuk.manhnv.net/v1/Employees/' + id )
     .then((response) => {
         let res = response.data
-        $('.info-form .field-label').each((index, item) => {
-            let fieldName = $(item).attr('fieldName')
-            let fieldType = $(item).attr('fieldType')
-            let value =res[fieldName]
-            value = formatDataInput(value, fieldType)
+        // $('.info-form .field-label').each((index, item) => {
+        //     let fieldName = $(item).attr('fieldName')
+        //     let fieldType = $(item).attr('fieldType')
+        //     let value =res[fieldName]
+        //     value = formatDataInput(value, fieldType)
             
-            $(item).find('input').val(value)
-            $(item).trigger('focusout')
-        })
+        //     $(item).find('input').val(value)
+        //     $(item).trigger('focusout')
+        // })
+        callback(res)
     }).catch(() => {
         showErrorToast()
     })

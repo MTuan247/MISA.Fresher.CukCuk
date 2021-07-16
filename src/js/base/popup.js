@@ -101,7 +101,7 @@ export function showWarningPopup(){
     `)
 
     $('.popup__background').on('click','.popup .confirm', function(){
-        $('.modal').fadeOut()
+        // $('.modal').fadeOut()
         hidePopup()
     })
 

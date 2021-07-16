@@ -13,6 +13,7 @@
             :name="inputName"
             :required="required"
             :pattern="pattern"
+            :value="modelValue"
             @input="onInputEvent"
         >
         <i v-if="clearIcon" class="fa fa-times icon-right" @click="clearInput" aria-hidden="true"></i>
@@ -54,6 +55,10 @@
             },
             pattern: {
                 default: ''
+            },
+            modelValue: {
+                type: String,
+                default: ''
             }
         },
         computed: {
@@ -79,7 +84,8 @@
              * Method xử lý sự kiện khi đang nhập
              * @author: NMTuan (15/7/2021)
              */
-            onInputEvent() {
+            onInputEvent($event) {
+                this.$emit('update', $event.target.value)
                 showClearIcon(this.$el)
             },
 
