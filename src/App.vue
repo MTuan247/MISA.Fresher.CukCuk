@@ -1,15 +1,23 @@
 <template>
   <div id="app">
-    <router-view />
+    <div id="employee">
+      <TheHeader />
+      <div class="main">
+        <TheNavbar />
+        <router-view />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// import Employee from './components/views/Employee.vue'
+import TheHeader from "./components/layout/TheHeader.vue";
+import TheNavbar from "./components/layout/TheNavbar.vue";
+
 export default {
   name: 'App',
   components: {
-    // Employee
+    TheHeader, TheNavbar
   }
 }
 </script>

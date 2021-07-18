@@ -13,20 +13,16 @@
                 <div class="nav-item-icon" ></div>
                 <div class="nav-item-text">Mua hàng</div>
             </div>
-            <a href="/customer.html">
-                <div id="customer" class="nav-item">
-                    <div class="nav-item-icon">
-                    </div>
-                    <div class="nav-item-text">Danh mục khách hàng</div>
+            <router-link to="Customer" id="customer" class="nav-item">
+                <div class="nav-item-icon">
                 </div>
-            </a>
-            <a href="/employee.html">
-                <div id="employee" class="nav-item">
-                    <div class="nav-item-icon">
-                    </div>
-                    <div class="nav-item-text">Danh mục nhân viên</div>
+                <div class="nav-item-text">Danh mục khách hàng</div>
+            </router-link>
+            <router-link to="Employee" id="employee" class="nav-item">
+                <div class="nav-item-icon">
                 </div>
-            </a>
+                <div class="nav-item-text">Danh mục nhân viên</div>
+            </router-link>
             <div id="setting" class="nav-item">
                 <div class="nav-item-icon"></div>
                 <div class="nav-item-text">Thiết lập hệ thống</div>

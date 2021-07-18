@@ -1,28 +1,28 @@
 <template>
     <div>
-        <div v-if="tooltip" class="input-warning">
-            <span>Định dạng không đúng</span>
+        <div v-if="tooltip" v-show="isShowTooltip" class="input-warning">
+            <span>{{ this.tooltipMessage }}</span>
             <i class="fa fa-caret-down" aria-hidden="true"></i>
         </div>
         <div class="label" >{{inputLabel}} <span v-if="required" >(<span style="color: red;">*</span>)</span></div>
         <input 
             :id="inputId" 
-            :class="inputClass" 
+            :class="{inputClass, 'field--error': !isValid, 'field--focus': isFocus }" 
             :type="inputType" 
             :maxlength="inputMaxlength" 
             :name="inputName"
             :required="required"
             :pattern="pattern"
-            :value="modelValue"
+            :value="this.modelValue"
             @input="onInputEvent"
+            @focus="inputFocusEvent"
+            @blur="inputFocusoutEvent"
         >
-        <i v-if="clearIcon" class="fa fa-times icon-right" @click="clearInput" aria-hidden="true"></i>
+        <i v-if="clearIcon" v-show="!this.isEmpty" class="fa fa-times icon-right" @click="clearInput" aria-hidden="true"></i>
     </div>
 </template>
 
 <script>
-    import $ from 'jquery'
-    import { showClearIcon } from '../../js/base/input'
     export default {
         name: 'BaseInput',
         props: {
@@ -61,7 +61,24 @@
                 default: ''
             }
         },
+        data() {
+            return {
+                isFocus: Boolean,
+                isEmpty: Boolean,
+                isValid: true,
+                isShowTooltip: false,
+                value: this.modelValue,
+                tooltipMessage: '',
+            }
+        },
         computed: {
+        },
+        watch: {
+            modelValue: function(value) {
+                this.value = value
+                this.isFocus = false
+                this.isValid = true
+            }
         },
         methods: {
             /**
@@ -69,7 +86,7 @@
              * @author: NMTuan (15/7/2021)
              */
             inputFocusEvent() {
-                $(this.$el).addClass('field--focus')
+                this.isFocus = true
             },
 
             /**
@@ -77,7 +94,10 @@
              * @author: NMTuan (15/7/2021)
              */
             inputFocusoutEvent() {
-                $(this.$el).removeClass('field--focus')
+                this.isFocus = false
+                this.tooltipMessage = this.getValidateMessage()
+                this.showTooltip()
+                this.$emit('setValid', this.isValid)
             },
 
             /**
@@ -86,7 +106,8 @@
              */
             onInputEvent($event) {
                 this.$emit('update', $event.target.value)
-                showClearIcon(this.$el)
+                this.value = $event.target.value
+                this.showClearIcon()
             },
 
             /**
@@ -94,9 +115,45 @@
              * @author: NMTuan (15/7/2021)
              */
             clearInput() {
-                $(this.$el).find('input').val('')
-                $(this.$el).find('input').trigger('input')
+                this.$emit('update', '')
+                this.isEmpty = true
             },
+
+            showClearIcon() {
+                if(this.value) {
+                    this.isEmpty = false
+                } else {
+                    this.isEmpty = true
+                }
+            },
+
+            getValidateMessage() {
+                if(this.required) {
+                    if(!this.value) {                        
+                        this.isValid = false
+                        return "Không được để trống"
+                    }
+                }
+                if(this.inputType == 'email') {
+                    //eslint-disable-next-line
+                    const emailPattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    if (!emailPattern.test(this.value)) {
+                        this.isValid = false
+                        return "Email k đúng đinh dạng"
+                    }
+                }
+                this.isValid = true
+                return ''
+            },
+
+            showTooltip() {
+                if(this.tooltip){
+                    if(!this.isValid) {
+                        this.isShowTooltip = true
+                        setTimeout(() => { this.isShowTooltip = false}, 3000)
+                    }
+                }
+            }
 
         }
 

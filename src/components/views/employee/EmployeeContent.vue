@@ -42,7 +42,6 @@
                     :extraData="[{title:'Tất cả vị trí', val: ''}]"
                 />
                 
-
             </div>
             <div class="btn-action-area">
                 <BaseButton 
@@ -61,24 +60,21 @@
             :columns="this.columns"
             :rows="this.rows"
             @openModal='openModal'
+            @updateSelectRows='updateSelectRows'
         />
         <ThePagination />
     </div>
 </template>
 
 <script>
-    import BaseButton from '../base/BaseButton.vue';
-    import BaseCombobox from '../base/BaseCombobox.vue';
-    import BaseGridTable from '../base/BaseGridTable.vue' 
-    import ThePagination from './ThePagination.vue'
+    import BaseButton from '../../base/BaseButton.vue';
+    import BaseCombobox from '../../base/BaseCombobox.vue';
+    import BaseGridTable from '../../base/BaseGridTable.vue' 
+    import ThePagination from '../../layout/ThePagination.vue'
 
-    import {deleteMultiple, getData} from '../../js/common/crud'
+    import {deleteMultiple, getData} from '../../../js/common/crud'
 
-    import { resetForm } from '../../js/base/form'
-    import { getNewCode } from '../../js/common/crud'
-    import { showAlarmPopup, showPopup } from '../../js/base/popup';
-
-    var $ = require('jquery')
+    import { showAlarmPopup, showPopup } from '../../../js/base/popup';
 
     export default {
         name: "TheContent",
@@ -149,6 +145,7 @@
                     }
                 ],
                 rows: [],
+                selectRows: [],
             }
         },
         components: {
@@ -161,14 +158,14 @@
         },
 
         methods: {
-            async showModal() {
-                $('.modal').show()
-                $('.modal .info-form input').first().focus()
-                resetForm('.modal')
-                $('.modal .info-form').attr('employeeId', '')
-                this.newCode = await getNewCode()
-                $('.info-form .field-label').first().find('input').val(this.newCode)
-            },
+            // async showModal() {
+            //     $('.modal').show()
+            //     $('.modal .info-form input').first().focus()
+            //     resetForm('.modal')
+            //     $('.modal .info-form').attr('employeeId', '')
+            //     this.newCode = await getNewCode()
+            //     $('.info-form .field-label').first().find('input').val(this.newCode)
+            // },
 
             refresh() {
                 getData((response) => {
@@ -177,15 +174,10 @@
             },
 
             delete() {
-                let employeeIds = []
-                $('table tbody').find('tr.selected').each((index, item) => {
-                    let employeeId = $(item).attr('employeeId')
-                    employeeIds.push(employeeId)
-                })
-                if (employeeIds.length == 0) {
+                if (this.selectRows.length == 0) {
                     showPopup('warning', 'Xóa bản ghi', 'Bạn chưa chọn bản ghi cần xóa!', function(){}, 'Đóng')
                 } else showAlarmPopup(() => {
-                    deleteMultiple(employeeIds, () => {
+                    deleteMultiple(this.selectRows, () => {
                         setTimeout(() => {
                             this.refresh()
                         }, 1000)
@@ -197,6 +189,16 @@
                 this.$emit('openModal', id)
             },
 
+            updateSelectRows(id) {
+                if (!this.selectRows.includes(id)){
+                    this.selectRows.push(id)
+                } else {
+                    let index = this.selectRows.indexOf(id)
+                    if ( index > -1 ) {
+                        this.selectRows.splice(index, 1)
+                    }
+                }
+            }
 
         }
     }
@@ -204,9 +206,9 @@
 
 <style scoped>
 
-@import '../../css/layout/content.css';
-@import '../../css/base/input.css';
-@import '../../css/base/popup.css';
-@import '../../css/base/toast.css';
+@import '../../../css/layout/content.css';
+@import '../../../css/base/input.css';
+@import '../../../css/base/popup.css';
+@import '../../../css/base/toast.css';
 
 </style>

@@ -2,7 +2,7 @@
 * Hàm format các giá trị null
 * Author: NMTuan (05/07/2021)
 */
-function formatNull(value) {
+export function formatNull(value) {
     if (!value) return "";
     return value;
 }
@@ -53,9 +53,21 @@ export function formatDateInput(value) {
  * @param {*} value 
  * @returns 
  */
-function formatWorkStatus(value) {
+export function formatWorkStatus(value) {
     if (value == 1) return "Đang làm việc"
-    else if (value == 0) return "Đã nghỉ việc"
+    else if (value === 0) return "Đã nghỉ việc"
+    return null;
+}
+
+/**
+ * Hàm format workstatus từ string sang int
+ * @author: (NMTuan) (17/07/2021)
+ * @param {String} value Giá trị string
+ * @returns giá trị int
+ */
+export function reverseFormatWorkStatus(value) {
+    if (value == "Đang làm việc") return 1
+    else if (value == "Đã nghỉ việc") return 0
     return null;
 }
 
@@ -65,7 +77,7 @@ function formatWorkStatus(value) {
  * @param {*} value 
  * @returns 
  */
-function formatMoney(value) {
+export function formatMoney(value) {
     if (!value) return null;
     return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
 }

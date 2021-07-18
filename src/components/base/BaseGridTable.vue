@@ -107,13 +107,17 @@
             checkBox(el) {
                 $(el).parent().parent().toggleClass('selected')
                 $(el).prev().toggleClass('custom-checkbox--selected')
+                this.$emit('updateSelectRows',$(el).parent().parent().attr('employeeId'))
             },
 
-            showModal() {
-                $('.modal').show()
-                $('.modal .info-form input').first().focus()
-            },
+            // showModal() {
+            //     $('.modal').show()
+            //     $('.modal .info-form input').first().focus()
+            // },
 
+            /**
+             * Hàm mở form
+             */
             openModal(id) {
                 this.$emit('openModal', id)
             }

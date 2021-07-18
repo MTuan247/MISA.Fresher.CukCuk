@@ -93,7 +93,6 @@
 
 .field-label .icon-right {
     cursor: pointer;
-    display: none;
     /* opacity: 0; */
     height: 16px;
     width: 13px;
@@ -138,12 +137,12 @@ input[type=number] {
 
 .input-warning {
     /* opacity: 0; */
-    display: none;
+    /* display: none; */
     font-family: GoogleSans-Light;
     position: absolute;
     top: -62px;
     left: 85px;
-    /* display: flex; */
+    display: flex;
     align-items: center;
     justify-content: center;
     background-color: #FF4747;

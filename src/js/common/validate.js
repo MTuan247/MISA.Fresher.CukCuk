@@ -31,7 +31,6 @@ export function validateMessage(el) {
     
 }
 
-
 /**
  * Hàm xử lý khi có thông báo
  * Author: NMTuan (06/07/2021)
