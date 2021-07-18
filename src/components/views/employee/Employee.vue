@@ -3,7 +3,7 @@
     <!-- <div class="main"> -->
     <EmployeeForm 
       baseUrl="http://cukcuk.manhnv.net/v1/Employees"
-      v-show='modalShow'
+      v-if='modalShow'
       @closeModal='closeModal'
       :entityId='employeeId'
       :entity='entity'

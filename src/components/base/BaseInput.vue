@@ -6,6 +6,7 @@
         </div>
         <div class="label" >{{inputLabel}} <span v-if="required" >(<span style="color: red;">*</span>)</span></div>
         <input 
+            ref="Input"
             :id="inputId" 
             :class="{inputClass, 'field--error': !isValid, 'field--focus': isFocus }" 
             :type="inputType" 

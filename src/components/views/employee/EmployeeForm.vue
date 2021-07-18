@@ -355,21 +355,33 @@
                 BaseInput
         },
 
+        async created() {
+            if (this.entityId) {
+                getDataById(this.entityId, (response) => {
+                    this.setForm(response)
+                })
+            } else {
+                this.resetFrom()
+                this.employeeCode = await getNewCode()
+            }
+        },
+
         mounted: function() {
+            this.$refs.EmployeeCode.$refs.Input.focus()
             this.initEvents()
         },
             
         watch: {
-            entityId: async function (val) {
-                if (val) {
-                    getDataById(val, (response) => {
-                        this.setForm(response)
-                    })
-                } else {
-                    this.resetFrom()
-                    this.employeeCode = await getNewCode()
-                }
-            }
+            // entityId: async function (val) {
+            //     if (val) {
+            //         getDataById(val, (response) => {
+            //             this.setForm(response)
+            //         })
+            //     } else {
+            //         this.resetFrom()
+            //         this.employeeCode = await getNewCode()
+            //     }
+            // }
         },
 
         methods: {
