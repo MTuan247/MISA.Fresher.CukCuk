@@ -1,6 +1,7 @@
 import $ from 'jquery'
+import EventBus from '../../plugins/eventbus';
 
-export function showErrorToast() {
+export function showErrorToastJQ() {
     $(`
         <div class="toast toast--error">
             <div class="toast__icon">
@@ -12,7 +13,7 @@ export function showErrorToast() {
     `).appendTo('#app').delay(2000).queue(function() { $(this).remove(); });
 }
 
-export function showToast(type, message, show = true) {
+export function showToastJQ(type, message, show = true) {
     if (!show) return;
     $(`
         <div class="toast toast--${type}">
@@ -27,4 +28,18 @@ export function showToast(type, message, show = true) {
 
 export function hideToast(el) {
     $(el).remove()
+}
+
+export function showErrorToast() {
+    EventBus.$emit('appendToast', {
+        type: 'error',
+        message: 'Có lỗi xảy ra'
+    })
+}
+
+export function showToast(type, message) {
+    EventBus.$emit('appendToast', {
+        type: type,
+        message: message
+    })
 }

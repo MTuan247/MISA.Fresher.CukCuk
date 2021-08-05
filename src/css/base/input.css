@@ -43,7 +43,7 @@
 }
 
 .field-label .field--error {
-    border: 1px solid #FF4747;
+    border: 1px solid #FF4747 !important;
 }
 
 .field-label{
@@ -62,6 +62,7 @@
     border-radius: 4px;
     height: 40px;
     padding-right: 8px;
+    font-size: 13px;
 }
 
 .field-label .field__input {
@@ -96,14 +97,15 @@
     /* opacity: 0; */
     height: 16px;
     width: 13px;
+    color: #777;
     position: absolute;
     right: 10px;
-    top: 32px;
+    top: 35px;
 }
 
 .field-label #salary {
     text-align: right;
-    padding-right: 40px;
+    padding-right: 80px;
 }
 
 .field-label .currency {

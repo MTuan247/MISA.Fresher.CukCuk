@@ -13,19 +13,20 @@ export function formatNull(value) {
  * @param {*} value 
  * @returns 
  */
-function formatDate(value) {
+export function formatDate(value) {
     if (!value) return null;
 
-    let rs = new Date(value)
+    let result = new Date(value)
 
-    let day = rs.getDate()
-    let month = rs.getMonth() + 1
-    let year = rs.getFullYear()
+    let day = result.getDate()
+    let month = result.getMonth() + 1
+    let year = result.getFullYear()
+
     if (day < 10) day = '0' + day;
     if (month < 10) month = '0' + month;
 
-    rs = day + '/' + month + '/' + year
-    return rs;
+    result = day + '/' + month + '/' + year
+    return result;
 }
 
 /**
@@ -36,15 +37,15 @@ function formatDate(value) {
  */
 export function formatDateInput(value) {
     if (!value) return null;
-    let rs = new Date(value)
-    let day = rs.getDate()
-    let month = rs.getMonth() + 1
-    let year = rs.getFullYear()
+    let result = new Date(value)
+    let day = result.getDate()
+    let month = result.getMonth() + 1
+    let year = result.getFullYear()
     if (day < 10) day = '0' + day;
     if (month < 10) month = '0' + month;
 
-    rs = year + '-' + month + '-' + day
-    return rs;
+    result = year + '-' + month + '-' + day
+    return result;
 }
 
 /**
@@ -78,8 +79,12 @@ export function reverseFormatWorkStatus(value) {
  * @returns 
  */
 export function formatMoney(value) {
-    if (!value) return null;
-    return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+    if (!value) return '';
+    value = value.toString()
+    value = value.replaceAll('.','')
+    value = value.replaceAll(',','')
+    return Number(value).toLocaleString('it-IT');
+    // return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
 }
 
 /**
@@ -102,20 +107,6 @@ function formatData(value, fieldName) {
     }
     rs = formatNull(rs)
     return rs;
-}
-
-/**
- * Hàm format các giá trị bind vào form
- * @param {*} value 
- * @param {*} fieldType 
- */
-function formatDataInput(value, fieldType) {
-    if (fieldType == "Date") {
-        value = formatDateInput(value)
-    } else if (fieldType == "Money") {
-        value = formatMoney(value)
-    }
-    return value
 }
 
 /**
@@ -147,4 +138,4 @@ function removeAccents(str) {
     return str;
 }
 
-export { formatData, formatDataInput, removeAccents}
+export { formatData, removeAccents}

@@ -13,12 +13,14 @@
 <script>
 export default {
   name: "BaseButton",
-  props: ['id', 'btnClass', 'icon', 'title', 'clickEvent', 'background', 'i'],
+  props: ['id', 'btnClass', 'icon', 'title', 'clickEvent', 'background', 'i', 'isDisabled'],
   computed: {
   },
   methods: {
     click() {
-      this.clickEvent('')
+      if (!this.isDisabled) {
+        this.clickEvent('')
+      }
     }
   }
 };

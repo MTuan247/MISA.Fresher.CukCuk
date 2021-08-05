@@ -1,10 +1,10 @@
 <template>
-  <div id="app">
+  <div data-app=true id="app">
     <div id="employee">
       <TheHeader />
       <div class="main">
         <TheNavbar />
-        <router-view />
+        <router-view :isContentCollapse="isContentCollapse" />
       </div>
     </div>
   </div>
@@ -18,6 +18,11 @@ export default {
   name: 'App',
   components: {
     TheHeader, TheNavbar
+  },
+  data() {
+    return {
+      isContentCollapse: false
+    }
   }
 }
 </script>

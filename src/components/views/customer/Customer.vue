@@ -1,12 +1,12 @@
 <template>
   <div id="employee">
     <!-- <div class="main"> -->
-    <EmployeeForm 
+    <CustomerForm 
+      baseUrl="http://cukcuk.manhnv.net/v1/Employees"
       v-if='modalShow'
       @closeModal='closeModal'
       :entityId='employeeId'
     />
-    <BaseToastContainer />
     <BasePopup 
       :type="popup['type']"
       :title="popup['title']"
@@ -15,8 +15,7 @@
       :callback="popup['callback']"
       :confirm="popup['confirm']"
     />
-    
-    <EmployeeContent 
+    <CustomerContent 
       :isContentCollapse="isContentCollapse"
       ref="EmployeeContent"
       @openModal='openModal'
@@ -28,19 +27,17 @@
 </template>
 
 <script>
-import EmployeeContent from "./EmployeeContent.vue";
-import EmployeeForm from "./EmployeeForm.vue"
+import CustomerContent from "./CustomerContent.vue";
+import CustomerForm from "./CustomerForm.vue"
 import BasePopup from "../../base/BasePopup"
-import BaseToastContainer from '../../base/BaseToastContainer.vue';
 
 export default {
   name: "Employee",
   props: ['isContentCollapse'],
   components: {
-    EmployeeContent,
-    EmployeeForm,
+    CustomerContent,
+    CustomerForm,
     BasePopup,
-    BaseToastContainer,
   },
   data() {
     return {
@@ -52,7 +49,6 @@ export default {
         type: 'warning',
         isShow: false,
       },
-      toasts: []
     }
   },
   methods: {
@@ -64,7 +60,7 @@ export default {
 
     closeModal() {
       this.modalShow = false
-    }
+    },
 
   }
 };

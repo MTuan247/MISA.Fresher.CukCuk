@@ -62,6 +62,10 @@
     background-color: #EBF9F4;
 }
 
+.grid table tr:hover {
+    background-color: #EBF9F4;
+}
+
 .grid .check-box {
     text-align: center;
     position: relative;

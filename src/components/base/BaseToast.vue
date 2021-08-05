@@ -1,30 +1,40 @@
 <template>
-    <div class="toast toast--${type}">
+    <div class="toast" :class="classType">
         <div class="toast__icon">
-            <img :src="'./assets/icon/' + type + '.png'" alt="">
+            <img :src="imgType" alt="">
         </div>
-        <div class="toast__messenger">${message}</div>
-        <i class="fa fa-times toast__close-icon" aria-hidden="true"  onclick="hideToast($(this).parent())" ></i>
+        <div class="toast__messenger">{{message}}</div>
+        <i class="fa fa-times toast__close-icon" aria-hidden="true"></i>
     </div>
 </template>
 
 <script>
     export default {
-        name: "BaseToast",
+        name: 'BaseToast',
         props: {
             type: {
-                type: String
+                default: 'success'
             },
             message: {
-                type: String
-            },
-            show: {
-                default: true
+                type: String,
+                default: ''
             }
+        },
+        computed: {
+            classType() {
+                return 'toast--' + this.type
+            },
+
+            imgType() {
+                return '/assets/icon/' + this.type + '.png'
+            }
+        },
+        created() {
+
         }
     }
 </script>
 
 <style scoped>
-@import '../../css/base/toast.css'
+@import '../../css/base/toast.css';
 </style>

@@ -1,0 +1,71 @@
+.date-picker {
+    position: relative;
+}
+
+.date-picker .date-picker__input {
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    height: 40px;
+    padding-right: 8px;
+    font-size: 13px;
+    padding-left: 16px;
+}
+
+
+.date-picker input[type="date"]::-webkit-inner-spin-button,
+.date-picker input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+.date-picker .date-picker__input::placeholder {
+    font-size: 11px;
+}
+
+.date-picker .date-picker__input:focus {
+    border: 1px solid #019160;
+    border-radius: 4px;
+    outline: none;
+    font-size: 13px;    
+    color: #000000;
+}
+
+.date-picker .date-picker__input--error {
+    border: 1px solid #FF4747;
+}
+
+.date-picker .v-picker {
+    position: absolute;
+    width: 300px;
+    left: 0px;
+    z-index: 999;
+    box-shadow: 2px 2px 3px #E9EBEE;
+    overflow: visible;
+}
+
+.date-picker .v-picker--up {
+    top: -410px;
+}
+
+.date-picker .v-picker--down {
+    top: 42px;
+}
+
+.date-picker .v-picker .v-picker__title {
+    display: block;
+}
+
+.date-picker .v-picker .v-picker__body {
+    height: 320px;
+}
+
+.date-picker .v-date-picker-table .v-btn.v-btn--active {
+    color: #fff;
+    /* background-color: #019160; */
+}
+
+.date-picker .calender-icon {
+    position: absolute;
+    right: 14px;
+    top: 12px;
+}

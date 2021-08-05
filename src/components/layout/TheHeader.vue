@@ -2,7 +2,7 @@
     <div class="header">
         <div class="header-left">
             <div class="logo-site">
-                <div class="toggle-icon"></div>
+                <div class="toggle-icon" @click="collapseContent" ></div>
                 <div class="site-icon"></div>
             </div>
             <div class="header-title">
@@ -21,7 +21,15 @@
 
 <script>
     export default {
+        /**
+         * Layout Header
+         */
         name: 'TheHeader',
+        methods: {
+            collapseContent() {
+                this.$parent.isContentCollapse = !this.$parent.isContentCollapse
+            }
+        }
     }
 </script>
 

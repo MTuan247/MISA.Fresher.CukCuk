@@ -43,12 +43,12 @@
                     <td>{{record.DepartmentName}}</td>
                     <td>{{record.WorkStatus | formatData("WorkStatus")}}</td>
                 </tr> -->
-                <tr :employeeId="row.EmployeeId" v-for="(row, index) in rows" :key="row.EmployeeId">
+                <tr @dblclick="dbclickRow(row.EmployeeId)" :employeeId="row.EmployeeId" :class="{'selected' : row['isSelected']}" v-for="(row, index) in records" :key="row.EmployeeId">
                     <td class="check-box">
-                        <div class="custom-checkbox">
+                        <div class="custom-checkbox" :class="{'custom-checkbox--selected' : row['isSelected']}">
                             <i class="fa fa-check" aria-hidden="true"></i>
                         </div>
-                        <input type="checkbox" name="" id="">
+                        <input type="checkbox" @change="checkBox(index)" name="" id="">
                     </td>
                     <td>{{index + 1}}</td>
                     <td :style="col.style" v-for="col in columns.slice(2)" :key="col.fieldName">
@@ -61,13 +61,29 @@
 </template>
 
 <script>
+    import Vue from 'vue'
     import { formatData} from '../../js/common/format'
-    // import { getDataById } from '../../js/common/crud'
 
-    var $ = require('jquery')
     export default {
         name: 'BaseGridTable',
-        props: ['columns', 'rows'],
+        props: ['columns', 'rows', 'selectedRows'],
+
+        data() {
+            return{
+                records : []
+            }
+        },
+
+        watch: {
+            rows: function() {
+                this.records = [...this.rows]
+                this.records.forEach(record => {
+                    let isSelected = false;
+                    if (this.selectedRows.includes(record.EmployeeId)) isSelected = true;
+                    record['isSelected'] = isSelected;
+                })
+            }
+        },
         
         filters: {
             formatData: function(value, fieldName) {
@@ -75,48 +91,36 @@
             }
         },
 
+        created() {
+        },
+
         mounted() {
-            this.initEvents()
         },
         methods: {
-            
-            /**
-             * Hàm xử lý các sự kiện
-             * Author: NMTuan (13/07/2021)
-             */
-            initEvents() {
-                let me = this
-                $("table").on('change', '.check-box input', function () {
-                    me.checkBox(this)
-                })
-
-                $("table").on('dblclick', 'tbody tr', function () {
-                    // me.showModal()
-                    let employeeId = $(this).attr('employeeId')
-                    // $('.modal .info-form').attr('employeeId', employeeId)
-                    // getDataById(employeeId)
-                    me.openModal(employeeId)
-                })
-            },
 
             /** 
              * Hàm xử lý click checkbox
-             * Author: NMTuan (05/07/2021)
-             * @param {element} el 
+             * Author: NMTuan (20/07/2021)
+             * @param {int} index 
              */
-            checkBox(el) {
-                $(el).parent().parent().toggleClass('selected')
-                $(el).prev().toggleClass('custom-checkbox--selected')
-                this.$emit('updateSelectRows',$(el).parent().parent().attr('employeeId'))
+            checkBox(index) {
+                let row = this.records[index]
+                row.isSelected = !row.isSelected
+                Vue.set(this.records, index, row)
+                this.$emit('updateSelectedRows', row.EmployeeId)
             },
 
-            // showModal() {
-            //     $('.modal').show()
-            //     $('.modal .info-form input').first().focus()
-            // },
+            /**
+             * Hàm xử lý dblclick vào hàng
+             * @author: NMTuan (20/07/2021)
+             */
+            dbclickRow(id) {
+                this.openModal(id)
+            },
 
             /**
              * Hàm mở form
+             * @author: NMTuan (20/07/2021)
              */
             openModal(id) {
                 this.$emit('openModal', id)

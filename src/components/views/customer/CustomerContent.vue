@@ -7,7 +7,6 @@
                 btnClass="content-title-btn btn-icon"
                 icon="'./assets/icon/add.png'"
                 title="Thêm nhân viên"
-                :isDisabled="isLoading"
                 :clickEvent="openModal"
             />
         </div>
@@ -17,36 +16,30 @@
                 <div class="search-field field">
                     <div class="div-icon input-icon search-icon">
                     </div>
-                    <input :disabled="isLoading" v-model="search" type="search" name="" id="" placeholder="Tìm kiếm">
+                    <input v-model="search" type="search" name="" id="" placeholder="Tìm kiếm">
                     <i class="fa fa-times icon-right" aria-hidden="true"></i>
                 </div>
 
                 <BaseCombobox
                     dataType="Department"
-                    api="https://localhost:44334/api/v1/Department"
+                    api="http://cukcuk.manhnv.net/api/Department"
                     id="department-combobox"
                     comboboxClass="filter"
                     fieldName="DepartmentName"
                     fieldId="DepartmentId"
                     placeholder="Tất cả phòng ban"
-                    v-model="departmentText"
-                    :defaultSelect="0"
                     :extraData='[{title: "Tất cả phòng ban", val: ""}]'
-                    :isDisabled="isLoading"
                     @updateValue='departmentId=$event'
                 />
 
                 <BaseCombobox
                     dataType="Position"
-                    api="https://localhost:44334/api/v1/Position"
+                    api="http://cukcuk.manhnv.net/v1/Positions"
                     id="position-combobox"
                     comboboxClass="filter"
                     fieldName="PositionName"
                     fieldId="PositionId"
                     placeholder="Tất cả vị trí"
-                    v-model="positionText"
-                    :defaultSelect="0"
-                    :isDisabled="isLoading"
                     :extraData="[{title:'Tất cả vị trí', val: ''}]"
                     @updateValue='positionId=$event'
                 />
@@ -65,37 +58,33 @@
                         }
                     ]"
                 ></v-combobox> -->
-                <!-- <BaseDatePicker 
-                    inputClass="filter"
-                /> -->
+                <!-- <v-date-picker v-model="date"></v-date-picker>
+                <input v-model="date" type="text"> -->
                 
             </div>
             <div class="btn-action-area">
-                <BaseButton
-                    i="far fa-trash-alt"
-                    btnClass="delete btn-seconds btn-action"
-                    :isDisabled="isLoading"
-                    :clickEvent="this.delete"
-                />
                 <BaseButton 
                     btnClass="refresh btn-seconds btn-action"
                     background="'./assets/icon/refresh.png'"
-                    :isDisabled="isLoading"
                     :clickEvent="this.restore"
+                />
+                <BaseButton
+                    i="far fa-trash-alt"
+                    btnClass="delete btn-seconds btn-action"
+                    :clickEvent="this.delete"
                 />
             </div>
         </div>
         <BaseGridTable 
             :columns="this.columns"
             :rows="this.rows"
-            :selectedRows="selectedRows"
             @openModal='openModal'
-            @updateSelectedRows='updateSelectedRows'
+            @updateSelectRows='updateSelectRows'
         />
         <ThePagination 
             :pageNumber="this.pageNumber"
             :pageSize="this.pageSize"
-            :totalPage="this.totalPage - 1"
+            :totalPage="this.totalPage"
             :totalRecord="this.totalRecord"
             @switchPage="switchPage($event)"
             @updatePageSize="updatePageSize"
@@ -109,7 +98,9 @@
     import BaseGridTable from '../../base/BaseGridTable.vue' 
     import ThePagination from '../../layout/ThePagination.vue'
 
-    import EmployeeApi from '../../../js/api/employee/EmployeeApi'
+    import {deleteMultiple, getDataFilterd} from '../../../js/common/crud'
+
+    import { showAlarmPopup, showPopup } from '../../../js/base/popup';
 
     export default {
         name: "TheContent",
@@ -179,25 +170,22 @@
                     {
                         title: 'Tình trạng công việc',
                         fieldName: 'WorkStatus',
-                        style: 'width: 160px;',
+                        style: 'width: 200px;',
                     }
                 ],
                 rows: [],
-                selectedRows: [],
+                selectRows: [],
                 departmentId: '',
-                departmentText: 'Tất cả phòng ban',
                 positionId: '',
-                positionText: 'Tất cả vị trí',
                 pageNumber: 1,
                 pageSize: 10,
                 totalPage: null,
                 totalRecord: null,
                 search: '',
-                isLoading: true,
             }
         },
         components: {
-            BaseButton, BaseCombobox, BaseGridTable, ThePagination,
+            BaseButton, BaseCombobox, BaseGridTable, ThePagination
         },
         created() {
             /**
@@ -235,21 +223,25 @@
              * @author: NMTuan (22/7/2021)
              */
             loadData() {
-                // getDataFilterd(this.pageSize, this.pageNumber, this.search, this.departmentId, this.positionId, (response) => {
-                //     this.totalPage = response.data.TotalPage
-                //     this.totalRecord = response.data.TotalRecord
-                //     this.rows = response.data.Data
-                // })
-                this.isLoading = true;
-                EmployeeApi.getDataFiltered(this.pageSize, this.pageNumber - 1, this.search, this.departmentId, this.positionId, (response) => {
+                getDataFilterd(this.pageSize, this.pageNumber, this.search, this.departmentId, this.positionId, (response) => {
                     this.totalPage = response.data.TotalPage
                     this.totalRecord = response.data.TotalRecord
                     this.rows = response.data.Data
-                    this.isLoading = false;
-                    if(!this.rows) {
-                        this.rows = [];
-                        this.totalRecord = 0;
-                    }
+                })
+            },
+
+            /**
+             * Hàm xóa các giá trị đã chọn
+             * Hàm cũ không còn sử dụng
+             * @author: NMTuan (20/07/2021)
+             */
+            deleteOld() {
+                if (this.selectRows.length == 0) {
+                    showPopup('warning', 'Xóa bản ghi', 'Bạn chưa chọn bản ghi cần xóa!', function(){}, 'Đóng')
+                } else showAlarmPopup(() => {
+                    deleteMultiple(this.selectRows, () => {
+                        this.refresh()
+                    })
                 })
             },
 
@@ -265,15 +257,14 @@
                     isShow: true,
                     confirm: 'Đóng'
                 }
-                if (this.selectedRows.length != 0) {
+                if (this.selectRows.length != 0) {
                     popup.type = 'alarm'
-                    popup.title = `Xóa ${this.selectedRows.length} bản ghi`
-                    popup.message = `Bạn có chắc muốn xóa ${this.selectedRows.length} bản ghi hay không?`
+                    popup.title = `Xóa ${this.selectRows.length} bản ghi`
+                    popup.message = `Bạn có chắc muốn xóa ${this.selectRows.length} bản ghi hay không?`
                     popup.confirm = 'Xóa'
                     popup.callback = () => {
-                        EmployeeApi.deleteMultiple(this.selectedRows, () => {
-                            this.selectedRows = [];
-                            this.loadData()
+                        deleteMultiple(this.selectRows, () => {
+                            this.refresh()
                         })
                     }
                 }
@@ -292,13 +283,13 @@
              * update các row được chọn
              * @author: NMTuan (20/07/2021)
              */
-            updateSelectedRows(id) {
-                if (!this.selectedRows.includes(id)){
-                    this.selectedRows.push(id)
+            updateSelectRows(id) {
+                if (!this.selectRows.includes(id)){
+                    this.selectRows.push(id)
                 } else {
-                    let index = this.selectedRows.indexOf(id)
+                    let index = this.selectRows.indexOf(id)
                     if ( index > -1 ) {
-                        this.selectedRows.splice(index, 1)
+                        this.selectRows.splice(index, 1)
                     }
                 }
             },
@@ -320,7 +311,7 @@
             switchPage(number) {
                 this.pageNumber = number
                 this.refresh()
-            },
+            }
 
         }
     }

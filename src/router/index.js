@@ -10,7 +10,8 @@ export default new Router({
     {
       path: '/',
       name: 'Default',
-      component: Employee
+      component: Employee,
+      props: true
     },
     {
       path: '/Employee',

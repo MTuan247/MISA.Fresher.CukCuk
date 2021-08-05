@@ -1,7 +1,8 @@
 .dropdown {
     padding-left: 16px;
     padding-right: 12px;
-    border: 1px solid #BBBBBB;
+    /* border: 1px solid #BBBBBB; */
+    width: 200px;
     height: 40px;
     border-radius: 4px;
     size: 13px;
@@ -29,8 +30,16 @@
     /* color: #000000; */
 }
 
+.dropdown .dropdown-content {
+    width: 200px;
+    height: 40px;
+    display: flex;
+    position: relative;
+    align-items: center;
+}
+
 .dropdown .collapse {
-    display: none;
+    /* display: none; */
     position: absolute;
     top: 50px;
     left: 0px;

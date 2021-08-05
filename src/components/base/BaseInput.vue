@@ -1,24 +1,29 @@
 <template>
     <div>
-        <div v-if="tooltip" v-show="isShowTooltip" class="input-warning">
-            <span>{{ this.tooltipMessage }}</span>
-            <i class="fa fa-caret-down" aria-hidden="true"></i>
-        </div>
+        <transition name="fade">
+            <div v-if="tooltip" v-show="isShowTooltip" class="input-warning">
+                <span>{{ this.tooltipMessage }}</span>
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
+            </div>
+        </transition>
         <div class="label" >{{inputLabel}} <span v-if="required" >(<span style="color: red;">*</span>)</span></div>
         <input 
             ref="Input"
+            autocomplete="off"
+            :disabled="isDisabled"
             :id="inputId" 
-            :class="{inputClass, 'field--error': !isValid, 'field--focus': isFocus }" 
+            :class="[inputClass, { 'field--error': !isValid, 'field--focus': isFocus }]" 
             :type="inputType" 
             :maxlength="inputMaxlength" 
             :name="inputName"
             :required="required"
             :pattern="pattern"
-            :value="this.modelValue"
+            :value="this.value"
             @input="onInputEvent"
             @focus="inputFocusEvent"
             @blur="inputFocusoutEvent"
         >
+        <span class="currency" v-if="inputId == 'salary'">(VND)</span>
         <i v-if="clearIcon" v-show="!this.isEmpty" class="fa fa-times icon-right" @click="clearInput" aria-hidden="true"></i>
     </div>
 </template>
@@ -60,6 +65,9 @@
             modelValue: {
                 type: String,
                 default: ''
+            },
+            isDisabled: {
+                default: false
             }
         },
         data() {
@@ -95,10 +103,11 @@
              * @author: NMTuan (15/7/2021)
              */
             inputFocusoutEvent() {
-                this.isFocus = false
-                this.tooltipMessage = this.getValidateMessage()
-                this.showTooltip()
-                this.$emit('setValid', this.isValid)
+                this.isFocus = false;
+                this.tooltipMessage = this.getValidateMessage();
+                this.showTooltip();
+                this.$emit('setValid', this.isValid);
+                this.$emit('update', this.value);
             },
 
             /**
@@ -106,9 +115,11 @@
              * @author: NMTuan (15/7/2021)
              */
             onInputEvent($event) {
-                this.$emit('update', $event.target.value)
-                this.value = $event.target.value
-                this.showClearIcon()
+                this.value = $event.target.value;
+                if (this.inputId == 'salary') {
+                    this.$emit('update', this.value);
+                }
+                this.showClearIcon();
             },
 
             /**
@@ -116,42 +127,60 @@
              * @author: NMTuan (15/7/2021)
              */
             clearInput() {
-                this.$emit('update', '')
-                this.isEmpty = true
+                this.$emit('update', '');
+                this.isEmpty = true;
             },
 
+            /**
+             * Method xử lý ẩn hiện clear icon
+             * @author: NMTuan (15/7/2021)
+             */
             showClearIcon() {
                 if(this.value) {
-                    this.isEmpty = false
+                    this.isEmpty = false;
                 } else {
-                    this.isEmpty = true
+                    this.isEmpty = true;
                 }
             },
 
+            /**
+             * Method xử lý lấy giá trị message trong tooltip
+             * @author: NMTuan (15/7/2021)
+             */
             getValidateMessage() {
                 if(this.required) {
                     if(!this.value) {                        
-                        this.isValid = false
-                        return "Không được để trống"
+                        this.isValid = false;
+                        return "Không được để trống";
                     }
                 }
                 if(this.inputType == 'email') {
                     //eslint-disable-next-line
                     const emailPattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                     if (!emailPattern.test(this.value)) {
-                        this.isValid = false
-                        return "Email k đúng đinh dạng"
+                        this.isValid = false;
+                        return "Email không đúng đinh dạng";
                     }
                 }
-                this.isValid = true
-                return ''
+                if(this.pattern) {
+                    if(!new RegExp(this.pattern).test(this.value)) {
+                        this.isValid = false;
+                        return "Định dạng không đúng";
+                    }
+                }
+                this.isValid = true;
+                return '';
             },
 
+            /**
+             * Method hiện tooltip
+             * @author: NMTuan (15/7/2021)
+             */
             showTooltip() {
                 if(this.tooltip){
                     if(!this.isValid) {
-                        this.isShowTooltip = true
-                        setTimeout(() => { this.isShowTooltip = false}, 3000)
+                        this.isShowTooltip = true;
+                        setTimeout(() => { this.isShowTooltip = false}, 2000);
                     }
                 }
             }
@@ -163,4 +192,14 @@
 
 <style scoped>
 @import '../../css/base/input.css';
+
+.fade-enter-active, .fade-leave-active {
+  transition: all .5s;
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateX(10px);
+}
+
 </style>

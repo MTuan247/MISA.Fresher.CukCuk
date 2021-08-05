@@ -17,7 +17,7 @@
 }
 
 .combo-box--focus {
-    border-color: #019160;
+    border-color: #019160 !important;
 }
 
 .combo-box--error {
@@ -43,7 +43,8 @@
 }
 
 .combo-box .collapse {
-    display: none;
+    max-height: 200px;
+    overflow: auto;
     position: absolute;
     top: 50px;
     left: 0px;
@@ -53,6 +54,10 @@
     width: 100%;
     box-shadow: 2px 2px 3px #E9EBEE;
     padding: 5px 0 5px 0;
+}
+
+.combo-box .collapse::-webkit-scrollbar {
+    width: 2px;
 }
 
 .combo-box .combo-box__item {

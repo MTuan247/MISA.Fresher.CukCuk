@@ -1,0 +1,15 @@
+.mx-datepicker {
+    width: 300px;
+}
+
+.mx-calendar-content .cell.active {
+    background-color: #019160 !important;
+}
+
+.mx-table-date .today {
+    color: var(--primary-color);
+}
+
+.mx-btn.mx-btn-text:hover {
+    color: var(--primary-color);
+}

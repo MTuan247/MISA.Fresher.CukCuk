@@ -1,8 +1,8 @@
 <template>
     <div class="modal">
         <div class="info-form">
-            <div class="form__header">
             <div class="div-icon close" @click="this.closeForm" style="background-image: url(./assets/icon/x.svg);"></div>
+            <div class="form__header">
                 <h1 class="text-title">Thông tin nhân viên</h1>
             </div>
             <div action="" class="form__body">
@@ -22,8 +22,8 @@
                                     inputClass="field__input"
                                     :tooltip="true"
                                     :required="true"
+                                    :inputMaxlength="20"
                                     :modelValue="this.data['EmployeeCode'] | formatNull"
-                                    :inputMaxlength="10"
                                     @update="setData($event,'EmployeeCode')"
                                     @setValid="setValid($event,'employeeCodeValid')"
                                 />
@@ -43,7 +43,7 @@
                             </div>
 
                             <div fieldName="DateOfBirth" fieldType="Date" class="field-label form__field-input">
-                                <!-- <BaseInput 
+                                <BaseInput 
                                     ref="DateOfBirth"
                                     inputLabel="Ngày sinh"
                                     inputClass="field__input"
@@ -52,20 +52,6 @@
                                     :modelValue="this.data['DateOfBirth'] | formatDate | formatNull"
                                     @update="setData($event,'DateOfBirth')"
                                     @setValid="setValid($event,'dateOfBirthValid')"
-                                /> -->
-                                <div class="label">Ngày sinh</div>
-                                <!-- <BaseDatePicker 
-                                    ref="DateOfBirth"
-                                    inputClass="field__input"
-                                    :value="data['DateOfBirth'] | formatDate | formatNull"
-                                    @input="setData($event,'DateOfBirth')"
-                                    @setValid="setValid($event,'dateOfBirthValid')"
-                                /> -->
-                                <BaseDatePick 
-                                    ref="DateOfBirth"
-                                    inputClass="field__input"
-                                    :value="data['IdentityDate']"
-                                    @input="setData($event,'IdentityDate')"
                                 />
                             </div>
 
@@ -75,7 +61,7 @@
                                     ref="GenderName"
                                     v-model="data['GenderName']"
                                     fieldName="GenderName"
-                                    :extraData="[{ title: 'Nam', val: 0 }, { title: 'Nữ', val: 1 }, { title: 'Không xác định', val: 2 }]"
+                                    :extraData="[{ title: 'Nam', val: 1 }, { title: 'Nữ', val: 0 }, { title: 'Không xác định', val: 2 }]"
                                     @updateValue="data['Gender'] = $event"
                                 />
                             </div>
@@ -86,7 +72,6 @@
                                     inputLabel="Số CMTND/ Căn cước"
                                     inputClass="field__input"
                                     inputType="number"
-                                    pattern="^[0-9]{9,15}$"
                                     :required="true"
                                     :tooltip="true"
                                     :modelValue="this.data['IdentityNumber'] | formatNull"
@@ -97,7 +82,7 @@
                             </div>
 
                             <div fieldName="IdentityDate" fieldType="Date" class="field-label form__field-input">
-                                <!-- <BaseInput 
+                                <BaseInput 
                                     ref="IdentityDate"
                                     inputLabel="Ngày cấp"
                                     inputClass="field__input"
@@ -105,20 +90,6 @@
                                     :clearIcon="false"
                                     :modelValue="this.data['IdentityDate'] | formatDate | formatNull"
                                     @update="setData($event,'IdentityDate')"
-                                /> -->
-                                <div class="label">Ngày cấp</div>
-                                <!-- <BaseDatePicker 
-                                    ref="IdentityDate"
-                                    inputClass="field__input"
-                                    :value="data['IdentityDate'] | formatDate | formatNull"
-                                    @input="setData($event,'IdentityDate')"
-                                    @setValid="setValid($event,'identityDateValid')"
-                                /> -->
-                                <BaseDatePick 
-                                    ref="IdentityDate"
-                                    inputClass="field__input"
-                                    :value="data['IdentityDate']"
-                                    @input="setData($event,'IdentityDate')"
                                 />
                             </div>
 
@@ -127,7 +98,6 @@
                                     ref="IdentityPlace"
                                     inputLabel="Nơi cấp"
                                     inputClass="field__input"
-                                    :inputMaxlength="15"
                                     :modelValue="this.data['IdentityPlace'] | formatNull"
                                     @update="setData($event,'IdentityPlace')" 
                                 />
@@ -155,7 +125,6 @@
                                     inputClass="field__input"
                                     pattern="^[0-9\-\+]{9,15}$"
                                     inputType="tel"
-                                    :inputMaxlength="15"
                                     :required="true"
                                     :tooltip="true"
                                     :modelValue="this.data['PhoneNumber'] | formatNull"
@@ -173,12 +142,11 @@
                                 <BaseCombobox
                                     ref="PositionName"
                                     dataType="Position"
-                                    api="https://localhost:44334/api/v1/Position"
+                                    api="http://cukcuk.manhnv.net/v1/Positions"
                                     fieldName="PositionName"
                                     fieldId="PositionId"
                                     v-model="data['PositionName']"
                                     @updateValue="data['PositionId'] = $event"
-                                    :extraData="[{ title: 'Chọn/Nhập vị trí', val: null }]"
                                 />
                             </div>
 
@@ -187,13 +155,12 @@
                                 <BaseCombobox
                                     ref="DepartmentName"
                                     dataType="Department"
-                                    api="https://localhost:44334/api/v1/Department"
+                                    api="http://cukcuk.manhnv.net/api/Department"
                                     id="department-combobox"
                                     fieldName="DepartmentName"
                                     fieldId="DepartmentId"
                                     v-model="data['DepartmentName']"
                                     @updateValue="data['DepartmentId'] = $event"
-                                    :extraData="[{ title: 'Chọn/Nhập phòng ban', val: null }]"
                                 />
                             </div>
 
@@ -222,7 +189,7 @@
                             </div>
 
                             <div fieldName="JoinDate" fieldType="Date" class="field-label form__field-input">
-                                <!-- <BaseInput 
+                                <BaseInput 
                                     ref="JoinDate"
                                     inputLabel="Ngày gia nhập công ty"
                                     inputClass="field__input"
@@ -230,41 +197,17 @@
                                     :clearIcon="false"
                                     :modelValue="this.data['JoinDate'] | formatDate | formatNull"
                                     @update="setData($event,'JoinDate')" 
-                                /> -->
-                                <div class="label">Ngày gia nhập công ty</div>
-                                <!-- <BaseDatePicker 
-                                    ref="JoinDate"
-                                    inputClass="field__input"
-                                    :value="data['JoinDate'] | formatDate | formatNull"
-                                    @input="setData($event,'JoinDate')"
-                                    position="up"
-                                    @setValid="setValid($event,'joinDateValid')"
-                                /> -->
-                                <BaseDatePick 
-                                    ref="JoinDate"
-                                    inputClass="field__input"
-                                    :value="data['JoinDate']"
-                                    @input="setData($event,'JoinDate')"
                                 />
                             </div>
 
                             <div fieldName="WorkStatus" class="field-label form__field-input">
-                                <!-- <BaseInput 
+                                <BaseInput 
                                     ref="WorkStatus"
                                     inputLabel="Tình trạng công việc"
                                     inputClass="field__input"
                                     inputType="text"
                                     :modelValue="this.data['WorkStatus'] | formatWorkStatus | formatNull"
                                     @update="setData($event,'WorkStatus')" 
-                                /> -->
-                                <div class="label">Tình trạng công việc</div>
-                                <BaseCombobox 
-                                    ref="WorkStatus"
-                                    v-model="data['WorkStatusName']"
-                                    fieldName="WorkStatusName"
-                                    fieldId="WorkStatus"
-                                    :extraData="[{title: 'Chọn/Nhập tình trạng công việc', val: null },{ title: 'Đã nghỉ việc', val: 0 }, { title: 'Đang làm việc', val: 1 }]"
-                                    @updateValue="data['WorkStatus'] = $event"
                                 />
                             </div>
 
@@ -297,11 +240,9 @@
     import BaseButton from '../../base/BaseButton.vue'
     import BaseInput from '../../base/BaseInput.vue'
 
-    import { loadData  } from '../../../js/common/crud'
+    // import {showWarningPopup} from '../../js/base/popup'
+    import { addData, getDataById, getNewCode, loadData, updateData } from '../../../js/common/crud'
     import Vue from 'vue'
-    import EmployeeApi from '../../../js/api/employee/EmployeeApi'
-    import BaseDatePick from '../../base/BaseDatePick.vue'
-
     export default {
         name: 'BaseForm',
         props: ['entityId'],
@@ -379,8 +320,7 @@
 
         components: {
             BaseCombobox, BaseButton,
-                BaseInput,
-                BaseDatePick
+                BaseInput
         },
 
         /**
@@ -388,17 +328,6 @@
          * @author: NMTuan (20/07/2021)
          */
         async created() {
-
-            if (this.entityId) {
-                EmployeeApi.getById(this.entityId, (response) => {
-                    this.setForm(response.data)
-                    this.convertData()
-                })
-            } else {
-                this.resetForm()
-                let emCode = await EmployeeApi.getNewCode()
-                Vue.set(this.data,'EmployeeCode', emCode)
-            }
 
             loadData('http://cukcuk.manhnv.net/v1/Positions', (response) => {
                 this.positions = response.data
@@ -408,6 +337,14 @@
                 this.departments = response.data
             })
 
+            if (this.entityId) {
+                getDataById(this.entityId, (response) => {
+                    this.setForm(response)
+                })
+            } else {
+                let emCode = await getNewCode()
+                Vue.set(this.data,'EmployeeCode', emCode)
+            }
         },
 
         /**
@@ -453,11 +390,10 @@
              * Hàm reset lại form
              * @author: NMTuan (20/07/2021)
              */
-            resetForm() {
-                this.data["DepartmentName"] = 'Chọn/Nhập phòng ban';
-                this.data["PositionName"] = 'Chọn/Nhập vị trí';
-                this.data["GenderName"] = 'Chọn/Nhập giới tính';
-                this.data["WorkStatusName"] = "Chọn/Nhập tình trạng công việc";
+            resetFrom() {
+                this.data.forEach(field => {
+                    this.data[field] = ''
+                })
             },
 
             /**
@@ -470,6 +406,7 @@
                     if(val == null) val = ''
                     Vue.set(this.data, field, val)
                 }
+                this.convertData()
             },
 
             /**
@@ -477,25 +414,22 @@
              * @author: NMTuan (20/07/2021)
              */
             submitForm() {
-                //Blur qua các ô input
                 this.isValid = true
                 this.refs.forEach(item => {
                     this.$refs[item].inputFocusoutEvent()
                 })
                 
-                //Kiểm tra có trường bị sai
                 for (let i in this.valids) {
                     this.isValid = this.isValid && this.valids[i]
                 }
 
-                //Nếu hợp lệ thì submit form
                 if (this.isValid) {
                     this.standardizedData(this.data)
                     console.log(this.data)
                     if(this.entityId) {
-                        EmployeeApi.update(this.data, this.entityId, () => this.$parent.$refs.EmployeeContent.restore() )
+                        updateData(this.data, this.entityId, () => this.$parent.$refs.EmployeeContent.restore() )
                     } else {
-                        EmployeeApi.saveData(this.data, () => this.$parent.$refs.EmployeeContent.restore())
+                        addData(this.data, () => this.$parent.$refs.EmployeeContent.restore())
                     }
                     this.hideForm()
                 }
@@ -533,31 +467,10 @@
              * @author: NMTuan (20/07/2021)
              */
             convertData() {
-                //Chuyển dữ liệu phòng ban
-                // let department = this.departments.find(item => item.DepartmentId == this.data.DepartmentId)
-                // if (department) {
-                //     Vue.set(this.data, 'DepartmentName', department.DepartmentName)
-                // } else {
-                //     Vue.set(this.data, 'DepartmentName', 'Chọn/Nhập phòng ban')
-                // }
-
-                //Chuyển dữ liệu vị trí
-                // let position = this.positions.find(item => item.PositionId == this.data.PositionId)
-                // if (position) {
-                //     // this.data['PositionName'] = position.PositionName
-                //     Vue.set(this.data, 'PositionName', position.PositionName)
-                // } else {
-                //     Vue.set(this.data, 'PositionName', 'Chọn/Nhập vị trí')
-                // }
-
-                //Chuyển dữ liệu tình trạng công việc
-                if(this.data['WorkStatus']  == 1 ) {
-                    this.data['WorkStatusName'] = 'Đang làm việc'
-                } else if(this['WorkStatus']  == 0 ) {
-                    this.data['WorkStatusName'] = 'Đã nghỉ việc'
-                } else {
-                    this.data['WorkStatusName'] = 'Chọn/Nhập tình trạng công việc'
-                }
+                let department = this.departments.find(item => item.DepartmentId == this.data.DepartmentId)
+                if (department) this.data['DepartmentName'] = department.DepartmentName
+                let position = this.positions.find(item => item.PositionId == this.data.PositionId)
+                if (position) this.data['PositionName'] = position.PositionName
             }
 
         }

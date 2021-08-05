@@ -33,7 +33,7 @@ export function toggleFade(el) {
     $('.combo-box').not(el).find('.collapse').fadeOut()
     $(el).find('.collapse').fadeToggle()
     $(el).find('.combo-box__icon').toggleClass('rotate')
-    detectSelectDropdownItem()
+    // detectSelectDropdownItem()
     firstItem(el)
 }
 
@@ -46,7 +46,7 @@ export function collapseFadeIn(el) {
     $('.combo-box').not(el).find('.collapse').fadeOut()
     $(el).find('.collapse').fadeIn()
     $(el).find('.combo-box__icon').addClass('rotate')
-    detectSelectDropdownItem()
+    // detectSelectDropdownItem()
     firstItem(el)
 }
 
@@ -259,17 +259,17 @@ export function checkItemExist(el) {
  * Author: NMTuan (07/07/2021)
  * @param {event} event 
  */
-document.onclick = function (event) {
-    if ($('.combo-box').has(event.target).length === 0 && !$('.combo-box').is(event.target)) {
-        var comboBoxs = document.querySelectorAll('.combo-box .collapse')
-        var icon = document.querySelectorAll('.combo-box .combo-box__icon')
-        var i;
-        for (i = 0; i < comboBoxs.length; i++) {
-            var openDropdown = comboBoxs[i];
-            if ($(openDropdown).css('display') == 'block') {
-                $(icon).removeClass('rotate')
-                $(openDropdown).fadeOut();
-            }
-        }
-    }
-}
+// document.onclick = function (event) {
+//     if ($('.combo-box').has(event.target).length === 0 && !$('.combo-box').is(event.target)) {
+//         var comboBoxs = document.querySelectorAll('.combo-box .collapse')
+//         var icon = document.querySelectorAll('.combo-box .combo-box__icon')
+//         var i;
+//         for (i = 0; i < comboBoxs.length; i++) {
+//             var openDropdown = comboBoxs[i];
+//             if ($(openDropdown).css('display') == 'block') {
+//                 $(icon).removeClass('rotate')
+//                 $(openDropdown).fadeOut();
+//             }
+//         }
+//     }
+// }
