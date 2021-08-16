@@ -1,10 +1,10 @@
 <template>
   <div data-app=true id="app">
-    <div id="employee">
+    <div>
       <TheHeader />
       <div class="main">
-        <TheNavbar />
-        <router-view :isContentCollapse="isContentCollapse" />
+        <TheNavbar :isCollapsed="isContentCollapsed" />
+        <router-view :isContentCollapse="isContentCollapsed" />
       </div>
     </div>
   </div>
@@ -17,11 +17,11 @@ import TheNavbar from "./components/layout/TheNavbar.vue";
 export default {
   name: 'App',
   components: {
-    TheHeader, TheNavbar
+    TheHeader, TheNavbar,
   },
   data() {
     return {
-      isContentCollapse: false
+      isContentCollapsed: false
     }
   }
 }

@@ -36,6 +36,11 @@
     background-size: contain;
 }
 
+.paging-bar .paging-center .paging-control--disabled {
+    filter: invert(80%) sepia(2%) saturate(109%) hue-rotate(330deg) brightness(96%) contrast(86%);
+    cursor: default;
+}
+
 .paging-bar .paging-center .paging-number {
     background-color: #dddddd;
     border: 1px solid #cccccc;

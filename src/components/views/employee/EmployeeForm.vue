@@ -1,5 +1,6 @@
 <template>
     <div class="modal">
+        <BaseSpinner :isLoading="isLoading" backgroundColor="rgba(0,0,0,0.5)" />
         <div class="info-form">
             <div class="form__header">
             <div class="div-icon close" @click="this.closeForm" style="background-image: url(./assets/icon/x.svg);"></div>
@@ -23,9 +24,9 @@
                                     :tooltip="true"
                                     :required="true"
                                     :modelValue="this.data['EmployeeCode'] | formatNull"
-                                    :inputMaxlength="10"
+                                    :inputMaxlength="20"
                                     @update="setData($event,'EmployeeCode')"
-                                    @setValid="setValid($event,'employeeCodeValid')"
+                                    @setValid="setValid($event,'EmployeeCode')"
                                 />
                             </div>
 
@@ -34,11 +35,12 @@
                                     ref="FullName"
                                     inputLabel="Họ và tên"
                                     inputClass="field__input"
+                                    :inputMaxlength="100"
                                     :tooltip="true"
                                     :required="true"
                                     :modelValue="this.data['FullName'] | formatNull"
                                     @update="setData($event,'FullName')"
-                                    @setValid="setValid($event,'fullNameValid')"
+                                    @setValid="setValid($event,'FullName')"
                                 />
                             </div>
 
@@ -64,18 +66,24 @@
                                 <BaseDatePick 
                                     ref="DateOfBirth"
                                     inputClass="field__input"
-                                    :value="data['IdentityDate']"
-                                    @input="setData($event,'IdentityDate')"
+                                    :value="data['DateOfBirth']"
+                                    @input="setData($event,'DateOfBirth')"
+                                    :formatType="formatDate"
                                 />
                             </div>
 
-                            <div fieldName="GenderName" class="field-label form__field-input">
+                            <div fieldName="GenderName" class="form__field-input">
                                 <div class="label">Giới tính</div>
                                 <BaseCombobox 
                                     ref="GenderName"
                                     v-model="data['GenderName']"
                                     fieldName="GenderName"
-                                    :extraData="[{ title: 'Nam', val: 0 }, { title: 'Nữ', val: 1 }, { title: 'Không xác định', val: 2 }]"
+                                    :extraData="[
+                                        { title: 'Chọn/Nhập giới tính', val: null },
+                                        { title: 'Nam', val: 0 }, 
+                                        { title: 'Nữ', val: 1 }, 
+                                        { title: 'Không xác định', val: 2 }
+                                    ]"
                                     @updateValue="data['Gender'] = $event"
                                 />
                             </div>
@@ -85,13 +93,13 @@
                                     ref="IdentityNumber"
                                     inputLabel="Số CMTND/ Căn cước"
                                     inputClass="field__input"
-                                    inputType="number"
                                     pattern="^[0-9]{9,15}$"
+                                    filterInputType="number"
                                     :required="true"
                                     :tooltip="true"
                                     :modelValue="this.data['IdentityNumber'] | formatNull"
                                     @update="setData($event,'IdentityNumber')"
-                                    @setValid="setValid($event,'identityNumberValid')" 
+                                    @setValid="setValid($event,'IdentityNumber')" 
                                 />
 
                             </div>
@@ -119,6 +127,7 @@
                                     inputClass="field__input"
                                     :value="data['IdentityDate']"
                                     @input="setData($event,'IdentityDate')"
+                                    :formatType="formatDate"
                                 />
                             </div>
 
@@ -145,7 +154,7 @@
                                     :required="true"
                                     :modelValue="this.data['Email'] | formatNull"
                                     @update="setData($event,'Email')"
-                                    @setValid="setValid($event,'emailValid')" 
+                                    @setValid="setValid($event,'Email')" 
                                 />
                             </div>
                             <div fieldName="PhoneNumber" class="field-label form__field-input">
@@ -160,7 +169,7 @@
                                     :tooltip="true"
                                     :modelValue="this.data['PhoneNumber'] | formatNull"
                                     @update="setData($event,'PhoneNumber')"
-                                    @setValid="setValid($event,'phoneNumberValid')" 
+                                    @setValid="setValid($event,'PhoneNumber')" 
                                 />
                             </div>
                         </div>
@@ -168,60 +177,65 @@
                     <div class="area">
                         <div class="content__header">B.Thông tin công việc</div>
                         <div class="form__input">
-                            <div fieldName="PositionName" class="field-label form__field-input">
+                            <div fieldName="PositionName" class="form__field-input">
                                 <div class="label">Vị trí</div>
                                 <BaseCombobox
                                     ref="PositionName"
                                     dataType="Position"
-                                    api="https://localhost:44334/api/v1/Position"
                                     fieldName="PositionName"
                                     fieldId="PositionId"
                                     v-model="data['PositionName']"
-                                    @updateValue="data['PositionId'] = $event"
+                                    :api="positionApi"
                                     :extraData="[{ title: 'Chọn/Nhập vị trí', val: null }]"
+                                    @updateValue="data['PositionId'] = $event"
                                 />
                             </div>
 
-                            <div fieldName="DepartmentName" class="field-label form__field-input">
+                            <div fieldName="DepartmentName" class="form__field-input">
                                 <div class="label">Phòng ban</div>
                                 <BaseCombobox
                                     ref="DepartmentName"
                                     dataType="Department"
-                                    api="https://localhost:44334/api/v1/Department"
                                     id="department-combobox"
                                     fieldName="DepartmentName"
                                     fieldId="DepartmentId"
                                     v-model="data['DepartmentName']"
-                                    @updateValue="data['DepartmentId'] = $event"
+                                    :api="departmentApi"
                                     :extraData="[{ title: 'Chọn/Nhập phòng ban', val: null }]"
+                                    @updateValue="data['DepartmentId'] = $event"
                                 />
                             </div>
 
-                            <div fieldName="PersonalTaxCode" class="field-label form__field-input">
+                            <div fieldName="PersonalTaxCode" class="form__field-input">
                                 <BaseInput 
                                     ref="PersonalTaxCode"
                                     inputLabel="Mã số thuế cá nhân"
                                     inputClass="field__input"
-                                    inputType="number"
+                                    pattern="^[0-9]{9,12}$"
+                                    filterInputType="number"
+                                    :inputMaxlength="12"
+                                    :tooltip="true"
                                     :modelValue="this.data['PersonalTaxCode'] | formatNull"
                                     @update="setData($event,'PersonalTaxCode')" 
+                                    @setValid="setValid($event,'PersonalTaxCode')" 
                                 />
                             </div>
 
-                            <div fieldName="Salary" fieldType="Money" class="field-label form__field-input">
+                            <div fieldName="Salary" fieldType="Money" class="form__field-input">
                                 <BaseInput 
                                     ref="Salary"
                                     inputLabel="Mức lương cơ bản"
                                     inputClass="field__input"
                                     inputType="text"
                                     inputId="salary"
+                                    filterInputType="number"
                                     :inputMaxlength="20"
                                     :modelValue="this.data['Salary'] | formatMoney"
                                     @update="setData($event,'Salary')" 
                                 />
                             </div>
 
-                            <div fieldName="JoinDate" fieldType="Date" class="field-label form__field-input">
+                            <div fieldName="JoinDate" fieldType="Date" class="form__field-input">
                                 <!-- <BaseInput 
                                     ref="JoinDate"
                                     inputLabel="Ngày gia nhập công ty"
@@ -245,10 +259,11 @@
                                     inputClass="field__input"
                                     :value="data['JoinDate']"
                                     @input="setData($event,'JoinDate')"
+                                    :formatType="formatDate"
                                 />
                             </div>
 
-                            <div fieldName="WorkStatus" class="field-label form__field-input">
+                            <div fieldName="WorkStatus" class="form__field-input">
                                 <!-- <BaseInput 
                                     ref="WorkStatus"
                                     inputLabel="Tình trạng công việc"
@@ -263,7 +278,14 @@
                                     v-model="data['WorkStatusName']"
                                     fieldName="WorkStatusName"
                                     fieldId="WorkStatus"
-                                    :extraData="[{title: 'Chọn/Nhập tình trạng công việc', val: null },{ title: 'Đã nghỉ việc', val: 0 }, { title: 'Đang làm việc', val: 1 }]"
+                                    direction="up"
+                                    :extraData="[
+                                        {title: 'Chọn/Nhập tình trạng công việc', val: null },
+                                        {title: 'Đã nghỉ việc', val: 0 }, 
+                                        {title: 'Đang làm việc', val: 1 },
+                                        {title: 'Đang học việc', val: 2},
+                                        {title: 'Không xác định', val: 3}
+                                    ]"
                                     @updateValue="data['WorkStatus'] = $event"
                                 />
                             </div>
@@ -284,6 +306,7 @@
                     btnClass="btn-icon"
                     title="Lưu"
                     :clickEvent="this.submitForm"
+                    @keydown.native.tab.exact.prevent="$refs.EmployeeCode.$refs.Input.focus()"
                 />
             </div>
         </div>
@@ -297,13 +320,13 @@
     import BaseButton from '../../base/BaseButton.vue'
     import BaseInput from '../../base/BaseInput.vue'
 
-    import { loadData  } from '../../../js/common/crud'
+    import BaseSpinner from '../../base/BaseSpinner.vue'
     import Vue from 'vue'
     import EmployeeApi from '../../../js/api/employee/EmployeeApi'
     import BaseDatePick from '../../base/BaseDatePick.vue'
 
     export default {
-        name: 'BaseForm',
+        name: 'EmployeeForm',
         props: ['entityId'],
         data() {
             return {
@@ -329,14 +352,14 @@
                     'WorkStatus', 
                 ],
 
-                departments: [],
-
-                positions: [],
-
                 data: {},
                 valids: [],
-
+                formatDate: localStorage.formatDate,
                 isValid: true,
+                departmentApi: EmployeeApi.departmentApi,
+                positionApi: EmployeeApi.positionApi,
+                oldData: {},
+                isLoading: false,
             }
         },
 
@@ -378,9 +401,7 @@
         //#endregion
 
         components: {
-            BaseCombobox, BaseButton,
-                BaseInput,
-                BaseDatePick
+            BaseCombobox, BaseButton, BaseInput, BaseDatePick, BaseSpinner
         },
 
         /**
@@ -388,25 +409,22 @@
          * @author: NMTuan (20/07/2021)
          */
         async created() {
+            this.isLoading = true
 
             if (this.entityId) {
                 EmployeeApi.getById(this.entityId, (response) => {
                     this.setForm(response.data)
                     this.convertData()
+                    this.oldData = JSON.parse(JSON.stringify(this.data))
+                    this.isLoading = false
                 })
             } else {
                 this.resetForm()
                 let emCode = await EmployeeApi.getNewCode()
                 Vue.set(this.data,'EmployeeCode', emCode)
+                this.oldData = JSON.parse(JSON.stringify(this.data))
+                this.isLoading = false
             }
-
-            loadData('http://cukcuk.manhnv.net/v1/Positions', (response) => {
-                this.positions = response.data
-            })
-
-            loadData('http://cukcuk.manhnv.net/api/Department', (response) => {
-                this.departments = response.data
-            })
 
         },
 
@@ -436,17 +454,22 @@
              * @author: NMTuan (21/07/2021)
              */
             closeForm() {
-                let popup = {
-                    type: 'warning',
-                    title : "Đóng hộp thoại",
-                    message : 'Bạn có muốn đóng hộp thoại nhập "Thông tin nhân viên không" hay không?',
-                    isShow: true,
-                    confirm: 'Đóng',
-                    callback: () => {
-                        this.hideForm()
+                if (this.isChanged()) {
+                    let popup = {
+                        type: 'warning',
+                        title : "Đóng hộp thoại",
+                        message : 'Bạn có muốn đóng hộp thoại nhập "Thông tin nhân viên không" hay không?',
+                        isShow: true,
+                        confirm: 'Đóng',
+                        callback: () => {
+                            this.hideForm()
+                        }
                     }
+                    this.$parent.popup = popup
+                } else {
+                    this.hideForm()
                 }
-                this.$parent.popup = popup
+                
             },
 
             /**
@@ -484,20 +507,24 @@
                 })
                 
                 //Kiểm tra có trường bị sai
-                for (let i in this.valids) {
-                    this.isValid = this.isValid && this.valids[i]
+                for (let valid in this.valids) {
+                    if (!this.valids[valid]) {
+                        this.$refs[valid].$refs.Input.focus()
+                        return;
+                    }
+                    this.isValid = this.isValid && this.valids[valid]
                 }
 
                 //Nếu hợp lệ thì submit form
                 if (this.isValid) {
+                    //Chuẩn hóa dữ liệu salary
                     this.standardizedData(this.data)
-                    console.log(this.data)
+                    //Nếu tồn tại id truyền vào thì update không thì thêm mới dữ liệu
                     if(this.entityId) {
-                        EmployeeApi.update(this.data, this.entityId, () => this.$parent.$refs.EmployeeContent.restore() )
+                        this.updateData();
                     } else {
-                        EmployeeApi.saveData(this.data, () => this.$parent.$refs.EmployeeContent.restore())
+                        this.addNewData();
                     }
-                    this.hideForm()
                 }
                 
             },
@@ -534,30 +561,61 @@
              */
             convertData() {
                 //Chuyển dữ liệu phòng ban
-                // let department = this.departments.find(item => item.DepartmentId == this.data.DepartmentId)
-                // if (department) {
-                //     Vue.set(this.data, 'DepartmentName', department.DepartmentName)
-                // } else {
-                //     Vue.set(this.data, 'DepartmentName', 'Chọn/Nhập phòng ban')
-                // }
+                if(!this.data["DepartmentId"]) {
+                    Vue.set(this.data, 'DepartmentName', 'Chọn/Nhập phòng ban')
+                }
 
                 //Chuyển dữ liệu vị trí
-                // let position = this.positions.find(item => item.PositionId == this.data.PositionId)
-                // if (position) {
-                //     // this.data['PositionName'] = position.PositionName
-                //     Vue.set(this.data, 'PositionName', position.PositionName)
-                // } else {
-                //     Vue.set(this.data, 'PositionName', 'Chọn/Nhập vị trí')
-                // }
+                if(!this.data["PositionId"]) {
+                    Vue.set(this.data, 'PositionName', 'Chọn/Nhập vị trí');
+                }
+
+                if(this.data["Gender"] === "") {
+                    Vue.set(this.data, 'GenderName', 'Chọn/Nhập giới tính');
+                }
 
                 //Chuyển dữ liệu tình trạng công việc
-                if(this.data['WorkStatus']  == 1 ) {
-                    this.data['WorkStatusName'] = 'Đang làm việc'
-                } else if(this['WorkStatus']  == 0 ) {
-                    this.data['WorkStatusName'] = 'Đã nghỉ việc'
-                } else {
-                    this.data['WorkStatusName'] = 'Chọn/Nhập tình trạng công việc'
+                if(this.data["WorkStatus"] === "") {
+                    Vue.set(this.data, 'WorkStatusName', 'Chọn/Nhập tình trạng công việc');
                 }
+            },
+
+            /**
+             * Hàm thêm mới dữ liệu
+             * @author: NMTuan (05/08/2021)
+             */
+            addNewData() {
+                this.isLoading = true
+                EmployeeApi.saveData(this.data, () => {
+                    this.isLoading = false
+                    this.$eventBus.$emit('refresh')
+                    this.hideForm()
+                }, () => {
+                    this.isLoading = false;
+                })
+            },
+
+            /**
+             * Hàm cập nhật thông tin dữ liệu
+             * @author: NMTuan (05/08/2021)
+             */
+            updateData() {
+                this.isLoading = true
+                EmployeeApi.update(this.data, this.entityId, () => {
+                    this.isLoading = false;
+                    this.$eventBus.$emit('refresh')
+                    this.hideForm()
+                }, () => {
+                    this.isLoading = false;
+                })
+            },
+
+            /**
+             * Hàm kiểm tra giá trị đã được cập nhật
+             * @author: NMTuan (11/08/2021)
+             */
+            isChanged() {
+                return JSON.stringify(this.oldData) !== JSON.stringify(this.data)
             }
 
         }

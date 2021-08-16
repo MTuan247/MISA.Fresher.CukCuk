@@ -4,7 +4,7 @@
             <div class="value dropdown-text">{{text}}</div>
             <i :class="{'rotate': isShow}" class="fa fa-caret-up icon-right" aria-hidden="true"></i>
         </div>
-        <div v-show="isShow" class="collapse" style="top: -100px">
+        <div v-show="isShow" class="collapse collapse--up">
             <!-- <div class="dropdown-item" @click="selectItem()">
                 <i class="fa fa-check icon-left" aria-hidden="true"></i>10 nhân viên/trang
             </div> -->
@@ -35,6 +35,7 @@
         },
         mounted() {
             this.setValue()
+            document.addEventListener('click', this.clickOutside)
         },
         watch: {
             /**
@@ -44,6 +45,9 @@
             dropdownValue: function() {
                 this.setValue()
             }
+        },
+        beforeDestroy () {
+            document.removeEventListener('click',this.clickOutside)
         },
         methods: {
             
@@ -75,7 +79,17 @@
                 let item = this.items.find((item) => item.val == this.val)
                 if (item) this.text = item.text;
                 // this.$emit('getValue', this.val)
-            }
+            },
+
+            /**
+             * Method click ra ngoài component
+             * @author: NMTuan (29/07/2021)
+             */
+            clickOutside (e) {
+                if (!this.$el.contains(e.target)) {
+                    this.isShow = false
+                }
+            },
         }   
     }
 </script>

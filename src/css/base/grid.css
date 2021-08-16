@@ -59,7 +59,19 @@
 }
 
 .grid table tr.selected {
-    background-color: #EBF9F4;
+    background-color: #2FBE8E;
+}
+
+.grid table tr.selected:hover {
+    background-color: #2FBE8E;
+}
+
+.grid table tr.selected td {
+    color: #fff;
+}
+
+.grid table tr.selected td:hover {
+    color: #fff;
 }
 
 .grid table tr:hover {

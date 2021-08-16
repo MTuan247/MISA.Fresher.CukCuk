@@ -1,6 +1,6 @@
 <template>
-    <div class="navbar">
-        <div class="navbar-content">
+    <div class="navbar" :class="{'navbar--collapsed' : isCollapsed}">
+        <div class="navbar-content" >
             <div id="overview" class="nav-item">
                 <div class="nav-item-icon" style=""></div>
                 <div class="nav-item-text">Tổng quan</div>
@@ -33,7 +33,8 @@
 
 <script>
     export default {
-        name: 'TheNavbar'
+        name: 'TheNavbar',
+        props: ['isCollapsed']
     }
 </script>
 

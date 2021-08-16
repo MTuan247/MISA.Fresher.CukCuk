@@ -2,8 +2,9 @@
   <div>
     <date-picker 
       v-model="computedDate"                 
-      format='DD/MM/YYYY'
+      :format='formatType'
       value-type="YYYY-MM-DD"
+      :placeholder="formatType"
       :lang="lang"
       :input-class="inputClass"
     ></date-picker>
@@ -24,6 +25,9 @@
       },
       value: {
 
+      },
+      formatType: {
+        default: 'DD/MM/YYYY'
       }
     },
     computed: {
@@ -39,7 +43,6 @@
     },
     data() {
       return {
-        date: "24/07/2019",
         lang: {
           formatLocale: {
             firstDayOfWeek: 1,

@@ -9,13 +9,19 @@ export function formatNull(value) {
 
 /**
  * Hàm format các giá trị date
- * Author: NMTuan (05/07/2021)
+ * Author: NMTuan (05/07/2021) 
+ * Modified By: NMTuan (05/08/2021)
  * @param {*} value 
  * @returns 
  */
-export function formatDate(value) {
+export function formatDate(value, format = 'dd/mm/yyyy') {
     if (!value) return null;
 
+    format = format.toLowerCase()
+    //Tách format string
+    var dateItems = format.split('/');
+
+    //Lấy các giá trị day, month, year
     let result = new Date(value)
 
     let day = result.getDate()
@@ -25,7 +31,23 @@ export function formatDate(value) {
     if (day < 10) day = '0' + day;
     if (month < 10) month = '0' + month;
 
-    result = day + '/' + month + '/' + year
+    result = ''
+
+    //Ghép các giá trị day, month, year
+    dateItems.forEach((item, index) => {
+        if (item == 'dd') {
+            result += day;
+        } else if (item == 'mm') {
+            result += month;
+        } else if (item == 'yyyy') {
+            result += year;
+        }
+        if (index != 2) {
+            result += '/'
+        }
+        
+    })
+
     return result;
 }
 
@@ -96,14 +118,13 @@ export function formatMoney(value) {
  */
 function formatData(value, fieldName) {
     let rs = value
-    if (fieldName == "WorkStatus") {
-        rs = formatWorkStatus(rs)
-    }
+    // if (fieldName == "WorkStatus") {
+    //     rs = formatWorkStatus(rs)
+    // }
     if (fieldName == "Salary") {
         rs = formatMoney(rs)
-    }
-    if (fieldName == "DateOfBirth") {
-        rs = formatDate(rs)
+    } else if (fieldName == "DateOfBirth") {
+        rs = formatDate(rs, localStorage.formatDate)
     }
     rs = formatNull(rs)
     return rs;

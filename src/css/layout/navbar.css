@@ -6,6 +6,10 @@
     border-right: 1px solid #e5e5e5;
 }
 
+.navbar--collapsed {
+    width: 50px;
+}
+
 .navbar a {
     text-decoration: none;
     color: #000;
@@ -13,6 +17,7 @@
 
 .navbar .navbar-content {
     width: 100%;
+    /* border-top: 1px solid #e5e5e5; */
 }
 
 .navbar .navbar-content .nav-item {
@@ -21,6 +26,8 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    flex-wrap: wrap;
+    overflow: hidden;
 }
 
 .navbar .navbar-content #overview .nav-item-icon {

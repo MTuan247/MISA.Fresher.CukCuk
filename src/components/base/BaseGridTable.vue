@@ -21,29 +21,15 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- <tr :key="row.EmployeeCode" v-for="row in this.rows" >
-                    <td v-for="col in columns" :key="col.fieldName" >{{row[col.fieldName]}}</td>
-                </tr> -->
-                <!-- <tr :key="record.EmployeeId" v-for="(record, index) in rows" >
-                    <td class="check-box">
-                        <div class="custom-checkbox">
-                            <i class="fa fa-check" aria-hidden="true"></i>
-                        </div>
-                        <input type="checkbox" name="" id="">
-                    </td>
-                    <td>{{index + 1}}</td>
-                    <td>{{record.EmployeeCode}}</td>
-                    <td>{{record.FullName}}</td>
-                    <td>{{record.GenderName}}</td>
-                    <td class="text-align-center">{{record.DateOfBirth | formatData("DateOfBirth") }}</td>
-                    <td>{{record.PhoneNumber}}</td>
-                    <td>{{record.Email}}</td>
-                    <td class="text-align-right">{{record.Salary | formatData("Salary")}}</td>
-                    <td>{{record.PositionName }}</td>
-                    <td>{{record.DepartmentName}}</td>
-                    <td>{{record.WorkStatus | formatData("WorkStatus")}}</td>
-                </tr> -->
-                <tr @dblclick="dbclickRow(row.EmployeeId)" :employeeId="row.EmployeeId" :class="{'selected' : row['isSelected']}" v-for="(row, index) in records" :key="row.EmployeeId">
+                <tr 
+                    @dblclick="dbclickRow(row.EmployeeId)" 
+                    @click.ctrl="ctrlClickRow(index)" 
+                    @click.right.exact.prevent="rightClickRow($event, row.EmployeeId, index)"
+                    :employeeId="row.EmployeeId" 
+                    :class="{'selected' : row['isSelected']}" 
+                    :key="row.EmployeeId"
+                    v-for="(row, index) in records" 
+                >
                     <td class="check-box">
                         <div class="custom-checkbox" :class="{'custom-checkbox--selected' : row['isSelected']}">
                             <i class="fa fa-check" aria-hidden="true"></i>
@@ -51,18 +37,29 @@
                         <input type="checkbox" @change="checkBox(index)" name="" id="">
                     </td>
                     <td>{{index + 1}}</td>
-                    <td :style="col.style" v-for="col in columns.slice(2)" :key="col.fieldName">
+                    <td :style="col.style" v-for="col in columns.slice(2)" :key="col.fieldName" :title="row[col.fieldName] | formatData(col.fieldName)">
                         {{ row[col.fieldName] | formatData(col.fieldName) }}
                     </td>
                 </tr>
             </tbody>
         </table>
+        <BaseContextMenu 
+            :contextMenuX="contextMenuX" 
+            :contextMenuY="contextMenuY" 
+            :contextMenuItems="[
+                {title: 'Chọn', action: checkBox, payload: contextMenuIndex},
+                {title: 'Sửa', action: openModal, payload: contextMenuId},
+                {title: 'Xóa', action: deleteRow, payload: contextMenuId},
+            ]"
+        />
     </div>
 </template>
 
 <script>
     import Vue from 'vue'
     import { formatData} from '../../js/common/format'
+    import BaseContextMenu from './BaseContextMenu.vue'
+    import EmployeeApi from '../../js/api/employee/EmployeeApi'
 
     export default {
         name: 'BaseGridTable',
@@ -70,8 +67,19 @@
 
         data() {
             return{
-                records : []
+                records : [],
+                contextMenuX : null,
+                contextMenuY : null,
+                contextMenuId: null,
+                contextMenuIndex: null,
+                isContextMenu : true,
+                isLoading: true
+
             }
+        },
+
+        components: {
+            BaseContextMenu
         },
 
         watch: {
@@ -123,8 +131,40 @@
              * @author: NMTuan (20/07/2021)
              */
             openModal(id) {
-                this.$emit('openModal', id)
-            }
+                // this.$emit('openModal', id)
+                this.$eventBus.$emit('openModal', id);
+            },
+            
+            /**
+             * Hàm xử lý ctrl-click vào row
+             * @author: NMTuan (09/08/2021)
+             */
+            ctrlClickRow(index) {
+                this.checkBox(index)
+            },
+
+            /**
+             * Hàm xử lý khi right click vào row
+             * @author: NMTuan (11/08/2021)
+             */
+            rightClickRow(event, id, index) {
+                this.contextMenuX = event.pageX - 220
+                this.contextMenuY = event.pageY - 48
+                this.contextMenuId = id
+                this.contextMenuIndex = index
+                this.$eventBus.$emit('showContext')
+            },
+
+            /**
+             * Hàm xóa bản ghi
+             * @author: NMTuan (13/08/2021)
+             */
+            deleteRow(id) {
+                EmployeeApi.delete(id, () => {
+                    this.$eventBus.$emit('loadData')
+                })
+            },
+
         }
     }
 </script>

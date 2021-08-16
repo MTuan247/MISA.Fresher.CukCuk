@@ -19,6 +19,16 @@ input {
     font-family: GoogleSans-Regular;
 }
 
+.main {
+    display: flex;
+    height: calc(100vh - 48px);
+    width: 100%;
+}
+
+.router-view {
+    width: calc(100% - 220px);
+}
+
 .div-icon {
     height: 24px;
     width: 24px;

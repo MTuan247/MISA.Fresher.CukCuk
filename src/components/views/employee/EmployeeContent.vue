@@ -1,5 +1,7 @@
 <template>
-    <div class="content" :class="{'content--collapse' : isContentCollapse}">
+    <div class="content" :class="{'content--collapsed' : isContentCollapse}">
+        <!-- <ClipLoader :loading="isLoading" size="60px" /> -->
+        <BaseSpinner :isLoading="isLoading" />
         <div class="content-header">
             <div class="content-title text-title">Danh sách nhân viên</div>
             <BaseButton
@@ -17,19 +19,28 @@
                 <div class="search-field field">
                     <div class="div-icon input-icon search-icon">
                     </div>
-                    <input :disabled="isLoading" v-model="search" type="search" name="" id="" placeholder="Tìm kiếm">
+                    <input 
+                        @keydown.enter.exact="refresh"
+                        :disabled="isLoading"
+                        ref="search" 
+                        v-model="search" 
+                        type="search" 
+                        name="" 
+                        id="" 
+                        placeholder="Tìm kiếm"
+                    >
                     <i class="fa fa-times icon-right" aria-hidden="true"></i>
                 </div>
 
                 <BaseCombobox
                     dataType="Department"
-                    api="https://localhost:44334/api/v1/Department"
                     id="department-combobox"
                     comboboxClass="filter"
                     fieldName="DepartmentName"
                     fieldId="DepartmentId"
                     placeholder="Tất cả phòng ban"
                     v-model="departmentText"
+                    :api="departmentApi"
                     :defaultSelect="0"
                     :extraData='[{title: "Tất cả phòng ban", val: ""}]'
                     :isDisabled="isLoading"
@@ -38,35 +49,24 @@
 
                 <BaseCombobox
                     dataType="Position"
-                    api="https://localhost:44334/api/v1/Position"
                     id="position-combobox"
                     comboboxClass="filter"
                     fieldName="PositionName"
                     fieldId="PositionId"
                     placeholder="Tất cả vị trí"
                     v-model="positionText"
+                    :api="positionApi"
                     :defaultSelect="0"
                     :isDisabled="isLoading"
                     :extraData="[{title:'Tất cả vị trí', val: ''}]"
                     @updateValue='positionId=$event'
                 />
-
-                <!-- <v-combobox
-                    solo
-                    :height=40
-                    :items="[
-                        {
-                            text: 'Tất cả vị trí',
-                            value: 'bbb'
-                        },
-                        {
-                            text: 'Phòng đào tạo',
-                            value: '1'
-                        }
-                    ]"
-                ></v-combobox> -->
-                <!-- <BaseDatePicker 
-                    inputClass="filter"
+                <!-- <BaseVCombobox 
+                    fieldName="PositionName"
+                    fieldValue="PositionId"
+                    :api="positionApi"
+                    :extraData="[{text:'Tất cả vị trí', value: ''}]"
+                    v-model="position"
                 /> -->
                 
             </div>
@@ -81,7 +81,7 @@
                     btnClass="refresh btn-seconds btn-action"
                     background="'./assets/icon/refresh.png'"
                     :isDisabled="isLoading"
-                    :clickEvent="this.restore"
+                    :clickEvent="this.refresh"
                 />
             </div>
         </div>
@@ -95,7 +95,7 @@
         <ThePagination 
             :pageNumber="this.pageNumber"
             :pageSize="this.pageSize"
-            :totalPage="this.totalPage - 1"
+            :totalPage="this.totalPage"
             :totalRecord="this.totalRecord"
             @switchPage="switchPage($event)"
             @updatePageSize="updatePageSize"
@@ -110,6 +110,9 @@
     import ThePagination from '../../layout/ThePagination.vue'
 
     import EmployeeApi from '../../../js/api/employee/EmployeeApi'
+
+    // import BaseVCombobox from '../../base/BaseVCombobox.vue'
+    import BaseSpinner from '../../base/BaseSpinner.vue'
 
     export default {
         name: "TheContent",
@@ -178,7 +181,7 @@
                     },
                     {
                         title: 'Tình trạng công việc',
-                        fieldName: 'WorkStatus',
+                        fieldName: 'WorkStatusName',
                         style: 'width: 160px;',
                     }
                 ],
@@ -186,18 +189,24 @@
                 selectedRows: [],
                 departmentId: '',
                 departmentText: 'Tất cả phòng ban',
+                departmentApi: EmployeeApi.departmentApi,
                 positionId: '',
                 positionText: 'Tất cả vị trí',
+                positionApi: EmployeeApi.positionApi,
                 pageNumber: 1,
                 pageSize: 10,
                 totalPage: null,
                 totalRecord: null,
                 search: '',
                 isLoading: true,
+                position: {
+                    text: 'Tất cả vị trí',
+                    value: ''
+                }
             }
         },
         components: {
-            BaseButton, BaseCombobox, BaseGridTable, ThePagination,
+            BaseButton, BaseCombobox, BaseGridTable, ThePagination, BaseSpinner
         },
         created() {
             /**
@@ -205,28 +214,23 @@
              * @author: NMTuan (22/07/2021)
              */
             this.loadData()
+
+            this.$eventBus.$on('loadData', this.loadData)
+            this.$eventBus.$on('refresh', this.refresh)
+
         },
 
         mounted: function(){
         },
 
         methods: {
-            
+
             /**
-             * Hàm refresh lại trang
+             * Hàm refresh đưa trang về các giá trị mặc định
              * @author: NMTuan (20/07/2021)
              */
             refresh() {
-                this.loadData()
-            },
-
-            /**
-             * Hàm restore đưa trang về các giá trị mặc định
-             * @author: NMTuan (20/07/2021)
-             */
-            restore() {
                 this.pageNumber = 1
-                this.pageSize = 10
                 this.loadData()
             },
 
@@ -235,11 +239,7 @@
              * @author: NMTuan (22/7/2021)
              */
             loadData() {
-                // getDataFilterd(this.pageSize, this.pageNumber, this.search, this.departmentId, this.positionId, (response) => {
-                //     this.totalPage = response.data.TotalPage
-                //     this.totalRecord = response.data.TotalRecord
-                //     this.rows = response.data.Data
-                // })
+                this.rows= [];
                 this.isLoading = true;
                 EmployeeApi.getDataFiltered(this.pageSize, this.pageNumber - 1, this.search, this.departmentId, this.positionId, (response) => {
                     this.totalPage = response.data.TotalPage
@@ -248,8 +248,9 @@
                     this.isLoading = false;
                     if(!this.rows) {
                         this.rows = [];
-                        this.totalRecord = 0;
                     }
+                }, () => {
+                    this.isLoading = false;
                 })
             },
 
@@ -285,7 +286,7 @@
              * @author: NMTuan (20/07/2021)
              */
             openModal(id) {
-                this.$emit('openModal', id)
+                this.$eventBus.$emit('openModal', id)
             },
 
             /**
@@ -310,7 +311,7 @@
             updatePageSize(pageSize) {
                 this.pageSize = pageSize
                 this.pageNumber = 1
-                this.refresh()
+                this.loadData()
             },
 
             /**
@@ -319,7 +320,7 @@
              */
             switchPage(number) {
                 this.pageNumber = number
-                this.refresh()
+                this.loadData()
             },
 
         }
@@ -330,5 +331,6 @@
 
 @import '../../../css/layout/content.css';
 @import '../../../css/base/toast.css';
+@import '../../../css/base/spinner.css';
 
 </style>

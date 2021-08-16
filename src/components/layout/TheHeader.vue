@@ -27,7 +27,7 @@
         name: 'TheHeader',
         methods: {
             collapseContent() {
-                this.$parent.isContentCollapse = !this.$parent.isContentCollapse
+                this.$parent.isContentCollapsed = !this.$parent.isContentCollapsed
             }
         }
     }

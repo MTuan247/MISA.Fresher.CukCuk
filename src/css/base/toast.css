@@ -4,11 +4,12 @@
     align-items: center;
     margin: 8px auto;
     height: 48px;
-    width: 300px;
+    width: fit-content;
     border-radius: 4px;
     box-shadow: 0 3px 6px #000000;
     background-color: #fff;
     z-index: 999;
+    padding-right: 32px;
 }
 
 .toast__close-icon {

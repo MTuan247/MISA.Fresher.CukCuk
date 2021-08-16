@@ -51,6 +51,11 @@
     padding: 5px 0 5px 0;
 }
 
+.dropdown .collapse--up {
+    /* top: -100px; */
+    transform: translateY(calc(-100% - 60px));
+}
+
 .dropdown .dropdown-item {
     z-index: 10;
     line-height: 40px;

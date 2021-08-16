@@ -10,6 +10,10 @@
     height: 40px;
 }
 
+.btn-base:focus {
+    outline: none;
+}
+
 .btn-default:hover {
     background-color: #2FBE8E;
 }
@@ -33,7 +37,11 @@
 
 .btn-icon:hover {
     background-color: #2FBE8E;
-} 
+}
+
+.btn-icon:focus {
+    background-color: #2FBE8E;
+}
 
 .btn-icon--pressed {
     background-color: #01B075;
@@ -65,6 +73,10 @@
 }
 
 .btn-seconds:hover {
+    background-color: #E9EBEE;
+}
+
+.btn-seconds:focus {
     background-color: #E9EBEE;
 }
 

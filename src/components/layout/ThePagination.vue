@@ -6,11 +6,13 @@
         <div class="paging-center">
 
             <div class="paging-item paging-control paging-first"
+                :class="{'paging-control--disabled' : isFirst}"
                 style="background-image: url('./assets/icon/btn-firstpage.svg');"
                 @click="firstPage"
             ></div>
 
             <div class="paging-item paging-control paging-prev"
+                :class="{'paging-control--disabled' : isFirst}"
                 style="background-image: url('./assets/icon/btn-prev-page.svg');"
                 @click="prevPage"
             ></div>
@@ -27,11 +29,13 @@
             >{{number}}</div>
 
             <div class="paging-item paging-control paging-next"
+                :class="{'paging-control--disabled' : isLast}"
                 style="background-image: url('./assets/icon/btn-next-page.svg');"
                 @click="nextPage"
             ></div>
 
             <div class="paging-item paging-control paging-last"
+                :class="{'paging-control--disabled' : isLast}"
                 style="background-image: url('./assets/icon/btn-lastpage.svg');"
                 @click="lastPage"
             ></div>
@@ -46,7 +50,11 @@
                     {
                         text: '20 nhân viên/trang',
                         val: 20
-                    }
+                    },
+                    {
+                        text: '50 nhân viên/trang',
+                        val: 50
+                    },
                 ]"
                 :dropdownValue="pageSize"
                 @getValue="updatePageSize"
@@ -79,7 +87,9 @@
         data() {
             return {
                 pagingNumber: [],
-                recordRange: ''
+                recordRange: '',
+                isFirst: true,
+                isLast: false,
             }
         },
         created() {
@@ -99,6 +109,9 @@
              */
             pageNumber: function (value) {
                 this.pagingNumber = this.getPagingNumber(value);
+                
+                this.isFirst = (value == 1)
+                this.isLast = (value == this.totalPage)
             },
             totalPage: function () {
                 this.pagingNumber = this.getPagingNumber(this.pageNumber);
@@ -157,10 +170,10 @@
                 //Xét trường hợp vượt quá giá trị tối đa
                 if (numberEnd > this.totalRecord) {
                     numberEnd = this.totalRecord;
-                    // numberStart = this.totalRecord - this.pageSize;
-                    // if (numberStart < 0) {
-                    //     numberStart = 0;
-                    // }
+                }
+                //Xét trường hợp không có bản ghi nào
+                if (!this.totalRecord) {
+                    numberStart = 0;
                 }
                 return numberStart + '-' + numberEnd + '/' + this.totalRecord;
             },
@@ -178,7 +191,7 @@
              * @author: NMTuan (20/07/2021)
              */
             prevPage() {
-                if (this.pageNumber == 1) return;
+                if (this.isFirst) return;
                 this.switchPage(this.pageNumber - 1);
             },
 
@@ -187,7 +200,7 @@
              * @author: NMTuan (20/07/2021)
              */
             nextPage() {
-                if (this.pageNumber == this.totalPage) return;
+                if (this.isLast) return;
                 this.switchPage(this.pageNumber + 1 );
             },
 
@@ -196,6 +209,7 @@
              * @author: NMTuan (20/07/2021)
              */
             lastPage() {
+                if (this.isLast) return;
                 this.switchPage(this.totalPage);
             },
 
@@ -204,6 +218,7 @@
              * @author: NMTuan (20/07/2021)
              */
             firstPage() {
+                if (this.isFirst) return;
                 this.switchPage(1);
             }
 

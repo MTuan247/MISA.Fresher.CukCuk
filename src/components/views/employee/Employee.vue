@@ -1,11 +1,12 @@
 <template>
-  <div id="employee">
-    <!-- <div class="main"> -->
-    <EmployeeForm 
-      v-if='modalShow'
-      @closeModal='closeModal'
-      :entityId='employeeId'
-    />
+  <div class="router-view">
+    <transition name="fade">
+      <EmployeeForm 
+        v-if='modalShow'
+        @closeModal='closeModal'
+        :entityId='employeeId'
+      />
+    </transition>
     <BaseToastContainer />
     <BasePopup 
       :type="popup['type']"
@@ -42,6 +43,13 @@ export default {
     BasePopup,
     BaseToastContainer,
   },
+  created() {
+    localStorage.formatDate = "DD/MM/YYYY"
+    this.$eventBus.$on('openModal', this.openModal)
+  },
+  destroyed() {
+    this.$eventBus.$off('openModal', this.openModal);
+  },
   data() {
     return {
       modalShow: false,
@@ -52,16 +60,20 @@ export default {
         type: 'warning',
         isShow: false,
       },
-      toasts: []
     }
   },
   methods: {
-
+    /**
+     * Hàm mở form
+     */
     openModal(id) {
       this.modalShow = true
       this.employeeId = id
     },
 
+    /**
+     * Hàm đóng form
+     */
     closeModal() {
       this.modalShow = false
     }
@@ -69,3 +81,11 @@ export default {
   }
 };
 </script>
+<style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: all .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+</style>

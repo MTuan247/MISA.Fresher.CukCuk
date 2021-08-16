@@ -2,7 +2,7 @@
     <div 
         :data-type="dataType" 
         :id="id" class="combo-box" 
-        :class="[comboboxClass, {'combo-box--focus' : isFocus, 'combo-box--error' : !isValid}]" 
+        :class="[comboboxClass, {'combo-box--focus' : isFocus, 'combo-box--error' : !isValid,  'combo-box--up' : direction == 'up'}]" 
         @keydown.up="pressUpEvent"
         @keydown.down="pressDownEvent"
         @keydown.enter="pressEnterEvent"
@@ -23,13 +23,12 @@
 
         <i :class="{rotate: isShow}" class="fa fa-angle-down combo-box__icon" @click="iconClickEvent" aria-hidden="true"></i>
         
-        <div class="collapse" v-show="isShow" >
+        <div class="collapse" ref="collapse" v-show="isShow" >
 
             <div
                 v-for="(item, index) in data" 
                 :key='item[fieldId]'
-                :val='item[fieldId]'
-                :index='index'
+                :ref='index'
                 :class="{ 'combo-box__item--selected' : index == selectedIndex, 'combo-box__item--focus' : index == focusIndex }"
                 v-show="item['isShow']"
                 class="combo-box__item"
@@ -83,12 +82,14 @@
             },
             isDisabled: {
                 default: false
+            },
+            direction: {
+                default: 'down'
             }
         },
 
         data() {
             return {
-                blurFlag: false,
                 text: this.value,
                 val: '',
                 isShow: false,
@@ -125,9 +126,6 @@
                     })
                 })
             }
-
-            
-
         },
         mounted () {
             document.addEventListener('click', this.clickOutside)
@@ -191,6 +189,9 @@
              * @author: NMTuan (21/7/2021)
              */
             inputFocusEvent() {
+                this.data.forEach(item => {
+                    item['isShow'] = true
+                })
                 this.isShow = true
                 this.isFocus = true
                 this.firstItem()
@@ -203,12 +204,7 @@
             inputFocusoutEvent() {
                 this.isFocus = false;
                 setTimeout(() => {
-                    let findItem = this.data.find(item => item[this.fieldName] == this.text);
-                    if(!findItem) {
-                        this.isValid = false;
-                    } else {
-                        this.isValid = true;
-                    }
+                    this.checkItemExist(this.text)
                 }, 500)
                 
             },
@@ -246,12 +242,18 @@
              * @author: NMTuan (21/7/2021)
              */
             pressEnterEvent() {
+                //Nếu đang đóng dropdown thì show
                 if(!this.isShow) {
                     this.inputFocusEvent()
+                //Nếu đang mở dropdown
                 } else {
+                    //Lấy index của item đang focus
                     let index = this.focusIndex
+                    //Lấy giá trị item đang focus
                     let val = this.data[index][this.fieldId]
+                    //Lấy text của item
                     let text = this.data[index][this.fieldName]
+                    //Chọn item
                     this.itemClickEvent(val, text, index)
                 }
             },
@@ -261,8 +263,13 @@
              * @author: NMTuan (21/7/2021)
              */
             firstItem() {
-                this.getShowIndexs()
-                this.focusIndex = this.showIndexs[0]
+                //Lấy những item đã lọc
+                this.getShowIndexs();
+                this.focusIndex = this.showIndexs[0];
+                this.$nextTick(() => {
+                    //Scroll lên đầu
+                    this.$refs.collapse.scrollTop = 0;
+                })
             },
 
             /**
@@ -273,7 +280,11 @@
                 let index = this.showIndexs.find( number => number > this.focusIndex)
                 if(!index) {
                     this.focusIndex = this.showIndexs[0]
+                    this.$refs.collapse.scrollTop = 0
                     return
+                }
+                if (index > 2) {
+                    this.$refs.collapse.scrollTop += 40
                 }
                 this.focusIndex = index
             },
@@ -283,13 +294,15 @@
              * @author: NMTuan (21/7/2021)
              */
             prevItem() {
-                let index = this.showIndexs.reverse().find( number => number < this.focusIndex)
-                this.showIndexs.reverse()
+                let index = this.showIndexs.reverse().find( number => number < this.focusIndex);
+                this.showIndexs.reverse();
                 if(index != undefined) {
-                    this.focusIndex = index
-                    return
+                    if (index < this.showIndexs.length - 2) this.$refs.collapse.scrollTop -= 40;
+                    this.focusIndex = index;
+                    return;
                 }
-                this.focusIndex = this.showIndexs[this.showIndexs.length - 1]
+                this.$refs.collapse.scrollTop = this.$refs.collapse.scrollHeight;
+                this.focusIndex = this.showIndexs[this.showIndexs.length - 1];
             },
             
             /**
@@ -308,9 +321,21 @@
              */
             pressTabEvent() {
                 this.isShow = false
+            },
+
+            /**
+             * Hàm kiểm tra giá trị trong text có tồn tại k
+             * @author: NMTuan (12/08/2021)
+             */
+            checkItemExist(text) {
+                if (!text) return;
+                let findItem = this.data.find(item => item[this.fieldName] == text);
+                if(!findItem) {
+                    this.isValid = false;
+                } else {
+                    this.isValid = true;
+                }
             }
-
-
         }
     }
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="field-label">
         <transition name="fade">
             <div v-if="tooltip" v-show="isShowTooltip" class="input-warning">
                 <span>{{ this.tooltipMessage }}</span>
@@ -22,6 +22,7 @@
             @input="onInputEvent"
             @focus="inputFocusEvent"
             @blur="inputFocusoutEvent"
+            @keypress="filterInput($event)"
         >
         <span class="currency" v-if="inputId == 'salary'">(VND)</span>
         <i v-if="clearIcon" v-show="!this.isEmpty" class="fa fa-times icon-right" @click="clearInput" aria-hidden="true"></i>
@@ -32,48 +33,62 @@
     export default {
         name: 'BaseInput',
         props: {
-            inputLabel: String,
+            //Label input
+            inputLabel: {},
+            //Loại input email, text, number
             inputType: {
                 type: String,
                 default: 'text'
             },
+            //Class cho input
             inputClass: {
                 type: String
             },
+            //Id cho input
             inputId: {
                 type: String
             },
+            //Name attribute input
             inputName: {
                 type:String
             },
+            //Max length
             inputMaxlength: {
                 type: Number,
                 default: 100
             },
+            //Clear icon
             clearIcon: {
                 default: true,
             },
+            //Có tooltip k
             tooltip: {
                 default: false,
             },
+            //Bắt buộc
             required: {
                 default: false
             },
+            //Pattern
             pattern: {
                 default: ''
             },
+            //Giá trị truyền vào
             modelValue: {
                 type: String,
                 default: ''
             },
             isDisabled: {
                 default: false
+            },
+            filterInputType: {
+                default: 'text'
             }
         },
         data() {
             return {
-                isFocus: Boolean,
-                isEmpty: Boolean,
+                isFocus: false,
+                isEmpty: true,
                 isValid: true,
                 isShowTooltip: false,
                 value: this.modelValue,
@@ -86,7 +101,7 @@
             modelValue: function(value) {
                 this.value = value
                 this.isFocus = false
-                this.isValid = true
+                // this.isValid = true
             }
         },
         methods: {
@@ -116,9 +131,12 @@
              */
             onInputEvent($event) {
                 this.value = $event.target.value;
+
                 if (this.inputId == 'salary') {
-                    this.$emit('update', this.value);
+                    this.$emit('update', $event.target.value);
+                    // this.value = formatMoney($event.target.value)
                 }
+                
                 this.showClearIcon();
             },
 
@@ -148,24 +166,27 @@
              * @author: NMTuan (15/7/2021)
              */
             getValidateMessage() {
+                //Kiểm tra trường bắt buộc
                 if(this.required) {
                     if(!this.value) {                        
                         this.isValid = false;
                         return "Không được để trống";
                     }
                 }
+                //Kiểm tra email
                 if(this.inputType == 'email') {
                     //eslint-disable-next-line
                     const emailPattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                     if (!emailPattern.test(this.value)) {
                         this.isValid = false;
-                        return "Email không đúng đinh dạng";
+                        return "Email không đúng định dạng";
                     }
                 }
+                //Kiểm tra theo pattern
                 if(this.pattern) {
-                    if(!new RegExp(this.pattern).test(this.value)) {
+                    if(!new RegExp(this.pattern).test(this.value) && this.value) {
                         this.isValid = false;
-                        return "Định dạng không đúng";
+                        return this.inputLabel + " không đúng định dạng";
                     }
                 }
                 this.isValid = true;
@@ -181,6 +202,18 @@
                     if(!this.isValid) {
                         this.isShowTooltip = true;
                         setTimeout(() => { this.isShowTooltip = false}, 2000);
+                    }
+                }
+            },
+
+            filterInput: function(evt) {
+                if (this.filterInputType == "number") {
+                    evt = (evt) ? evt : window.event;
+                    var charCode = (evt.which) ? evt.which : evt.keyCode;
+                    if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                        evt.preventDefault();
+                    } else {
+                        return true;
                     }
                 }
             }

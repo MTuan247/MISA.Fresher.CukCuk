@@ -2,6 +2,27 @@
     width: 300px;
 }
 
+.mx-datepicker .mx-input-wrapper input {
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    height: 40px;
+    padding-right: 32px;
+    font-size: 13px;
+    padding-left: 16px;
+}
+
+.mx-datepicker .mx-input-wrapper input::placeholder {
+    font-size: 11px;
+}
+
+.mx-datepicker .mx-input-wrapper input:focus {
+    border: 1px solid #019160;
+    border-radius: 4px;
+    outline: none;
+    font-size: 13px;    
+    color: #000000;
+}
+
 .mx-calendar-content .cell.active {
     background-color: #019160 !important;
 }

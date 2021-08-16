@@ -28,6 +28,10 @@
             EventBus.$off('appendToast', this.appendToast);
         },
         methods: {
+            /**
+             * Hàm thêm toast
+             * @author: NMTuan (09/08/2021)
+             */
             appendToast(toast) {
                 this.toasts.push(toast)
                 setTimeout(() => {

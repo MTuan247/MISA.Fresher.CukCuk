@@ -36,7 +36,11 @@
     outline: none;
 }
 
-.field--focus {
+.field-label{
+    position: relative;
+}
+
+.field-label .field--focus {
     border: 1px solid #019160;
     font-size: 13px;
     color: #000000;
@@ -44,10 +48,6 @@
 
 .field-label .field--error {
     border: 1px solid #FF4747 !important;
-}
-
-.field-label{
-    position: relative;
 }
 
 .field-label .label {
@@ -61,13 +61,14 @@
     border: 1px solid #bbb;
     border-radius: 4px;
     height: 40px;
-    padding-right: 8px;
+    padding-right: 32px;
     font-size: 13px;
-}
-
-.field-label .field__input {
     padding-left: 16px;
 }
+/* 
+.field-label .field__input {
+    padding-left: 16px;
+} */
 
 
 .field-label input::placeholder {
@@ -149,7 +150,8 @@ input[type=number] {
     justify-content: center;
     background-color: #FF4747;
     height: 80px;
-    width: 200px;
+    padding: 0px 12px;
+    /* width: 200px; */
     border-radius: 8px;
     color: white;
     transition: all 1s;

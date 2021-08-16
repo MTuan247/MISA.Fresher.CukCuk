@@ -1,5 +1,13 @@
 <template>
-  <div :id="id" :class="btnClass" @click="this.click" :style="{ backgroundImage: 'url(' + this.background + ')' }" >
+  <div 
+    tabindex="0" 
+    class="btn-base" 
+    :class="btnClass" 
+    :id="id" 
+    :style="{ backgroundImage: 'url(' + this.background + ')' }" 
+    @click="this.handleEvent" 
+    @keydown.enter="handleEvent"
+  >
     <div
       v-if="icon"
       class="icon-lelf div-icon iconLeft"
@@ -17,7 +25,10 @@ export default {
   computed: {
   },
   methods: {
-    click() {
+    /**
+     *Hàm xử lý event truyền vào
+     */
+    handleEvent() {
       if (!this.isDisabled) {
         this.clickEvent('')
       }
